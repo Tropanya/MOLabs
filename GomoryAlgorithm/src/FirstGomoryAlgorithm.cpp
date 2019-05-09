@@ -1,0 +1,2 @@
+#include "GomoryAlgorithm/FirstGomoryAlgorithm.h"
+/*============================================================================*/
