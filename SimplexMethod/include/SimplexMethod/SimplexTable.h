@@ -20,6 +20,8 @@ private:
   std::vector<unsigned int> _basis;
   std::vector<unsigned int> _notBasis;
 
+  std::vector<mpq_class> _solutionVars;
+
   SimplexTableData _data;
 private:
   void _fillTable(

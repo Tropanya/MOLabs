@@ -13,6 +13,8 @@ SimplexTable::SimplexTable(
   assert((variableCount == data[0]->GetData().size() - 1) &&
     "Variable count fail!");
 
+  _solutionVars.resize(variableCount);
+
   for (unsigned int i = 0; i < variableCount; ++i)
     _notBasis.emplace_back(i);
 
@@ -75,11 +77,13 @@ ResolutionElement SimplexTable::_getResolutionElement() const
         isFirst = false;
       }
       else
+      {
         if (cmpVal <= res.resolutionVal)
         {
           res.vertIndex = i;
           res.resolutionVal = cmpVal;
         }
+      }
     }
   }
 
@@ -130,6 +134,18 @@ void SimplexTable::RebuildTable(
         (resolution.resolutionVal * oldData[i][j] -
           oldData[resolution.vertIndex][j] * oldData[i][resolution.horIndex]) /
           resolution.resolutionVal;
+
+  for (unsigned int i = 0; i < GetVariableCount(); ++i)
+  {
+    auto it = std::find(_basis.begin(), _basis.end(), i);
+    if (it != _basis.end())
+      _solutionVars[i] = _data[std::distance(_basis.begin(), it)].back();
+    else
+    {
+      it = std::find(_notBasis.begin(), _notBasis.end(), 0);
+      _solutionVars[i] = _data[std::distance(_notBasis.begin(), it)].back();
+    }
+  }
 }
 /*============================================================================*/
 void SimplexTable::AddRaw(
