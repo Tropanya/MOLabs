@@ -48,6 +48,7 @@ int main()
   std::cout << table << std::endl;
 
   GomoryAlgorithm g(table);
+  std::cout << table << std::endl;
 
   return 0;
 }

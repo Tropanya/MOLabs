@@ -24,7 +24,9 @@ GomoryAlgorithm::GomoryAlgorithm(
         index = i;
 
     _createAdditionalRestriction(index, table);
+    table.InvertRaw(table.GetData().size() - 1);
     std::cout << table << std::endl;
+    table.RebuildTable(_getResolutionElement(table));
   }
   else
     return;
@@ -51,5 +53,31 @@ void GomoryAlgorithm::_createAdditionalRestriction(
   elementData.back() = mpq_class(-1) * GetProperFraction(raw.back());
 
   table.AddRaw(&(SimplexTableElement(elementData)));
+}
+/*============================================================================*/
+ResolutionElement GomoryAlgorithm::_getResolutionElement(
+  const SimplexTable& table) const
+{
+  ResolutionElement res;
+  res.horIndex = 0;
+  res.vertIndex = table.GetBasic().size() - 1;
+  res.resolutionVal = mpq_class(-1);
+
+  mpq_class cmpVal(0);
+
+  for (unsigned int i = 0; i < table.GetData()[res.vertIndex].size() - 1; ++i)
+  {
+    cmpVal = table.GetData().back()[i] / table.GetData()[res.vertIndex][i];
+
+    if (cmpVal > res.resolutionVal)
+    {
+      res.horIndex = i;
+      res.resolutionVal = cmpVal;
+    }
+  }
+
+  res.resolutionVal = table.GetData()[res.vertIndex][res.horIndex];
+
+  return res;
 }
 /*============================================================================*/

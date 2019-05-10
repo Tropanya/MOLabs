@@ -9,6 +9,8 @@ private:
   void _createAdditionalRestriction(
     unsigned int index,
     SimplexTable& table);
+  ResolutionElement _getResolutionElement(
+    const SimplexTable& table) const;
 public:
   GomoryAlgorithm(
     SimplexTable& table);
