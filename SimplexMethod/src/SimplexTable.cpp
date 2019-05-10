@@ -21,7 +21,10 @@ SimplexTable::SimplexTable(
 
   _fillTable(data);
 
-  RebuildTable(_getResolutionElement());
+  while (!_isOptimalSolution())
+    RebuildTable(_getResolutionElement());
+
+  _isOptimal = true;
 }
 /*============================================================================*/
 void SimplexTable::_fillTable(
@@ -90,6 +93,20 @@ void SimplexTable::_swapBasic(
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
+bool SimplexTable::_isOptimalSolution()
+{
+  bool res = true;
+
+  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+    if (_data.back()[i] < mpq_class(0))
+    {
+      res = false;
+      break;
+    }
+
+  return res;
+}
+/*============================================================================*/
 void SimplexTable::RebuildTable(
   const ResolutionElement& resolution)
 {
@@ -108,11 +125,7 @@ void SimplexTable::RebuildTable(
         _data[i][j] =
         (resolution.resolutionVal * oldData[i][j] -
           oldData[resolution.vertIndex][j] * oldData[i][resolution.horIndex]) /
-        resolution.resolutionVal;
-
-  for (unsigned int i = 0; i < _data.back().size(); ++i)
-    if (_data.back()[i] < mpq_class(0))
-      RebuildTable(_getResolutionElement());
+          resolution.resolutionVal;
 }
 /*============================================================================*/
 void SimplexTable::AddRaw(

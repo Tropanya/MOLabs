@@ -15,6 +15,8 @@ struct ResolutionElement
 class SimplexTable
 {
 private:
+  bool _isOptimal;
+
   std::vector<unsigned int> _basis;
   std::vector<unsigned int> _notBasis;
 
@@ -25,6 +27,7 @@ private:
   ResolutionElement _getResolutionElement() const;
   void _swapBasic(
     const ResolutionElement& resolution);
+  bool _isOptimalSolution();
 public:
   SimplexTable(
     unsigned int variableCount,
@@ -43,6 +46,7 @@ public:
   inline const std::vector<mpq_class> GetRaw(
     unsigned int index) const { return _data[index]; }
   inline const SimplexTableData& GetData() const { return _data; }
+  inline bool IsOptimal() { return _isOptimal; }
 
   friend std::ostream& operator<<(
     std::ostream& stream,
