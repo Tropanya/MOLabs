@@ -13,8 +13,11 @@ struct Point
   mpq_class x, y;
 };
 /*============================================================================*/
-mpq_class Dot(const Point& p1, const Point& p2);
-bool IsBasis(const Point& point);
+mpq_class Dot(
+  const Point& p1,
+  const Point& p2);
+bool IsBasis(
+  const Point& point);
 /*============================================================================*/
 std::vector<mpq_class>& CreateElementDataFromPoints(
   std::vector<mpq_class>& data,
@@ -30,6 +33,9 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   std::vector<SimplexTableElement*>& data,
   const std::vector<Point>& points);
 /*============================================================================*/
-mpq_class GetProperFraction(const mpq_class& improperFraction);
+mpq_class GetTotalPart(
+  const mpq_class& improperFraction);
+mpq_class GetProperFraction(
+  const mpq_class& improperFraction);
 /*============================================================================*/
 #endif // UTILS_H

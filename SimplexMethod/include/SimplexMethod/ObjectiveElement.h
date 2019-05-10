@@ -12,8 +12,9 @@ private:
 private:
   void _toCanonical() override;
 public:
-  ObjectiveElement(const std::vector<mpq_class>& data,
-                   ObjectiveElementType::ObjectiveElementType type);
+  ObjectiveElement(
+    const std::vector<mpq_class>& data,
+    ObjectiveElementType::ObjectiveElementType type);
 };
 /*============================================================================*/
 #endif // OBJECTIVE_ELEMENT_H

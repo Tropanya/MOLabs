@@ -15,7 +15,8 @@ protected:
 private:
   virtual void _toCanonical() {  };
 public:
-  SimplexTableElement(const SimplexTableElementData& data);
+  SimplexTableElement(
+    const SimplexTableElementData& data);
   virtual ~SimplexTableElement();
 
   inline const SimplexTableElementData& GetData() const { return _data; }

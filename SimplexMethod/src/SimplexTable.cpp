@@ -20,10 +20,12 @@ SimplexTable::SimplexTable(
     _basis.emplace_back(i + variableCount);
 
   _fillTable(data);
-  RebuildTable();
+
+  RebuildTable(_getResolutionElement());
 }
 /*============================================================================*/
-void SimplexTable::_fillTable(const std::vector<SimplexTableElement*>& data)
+void SimplexTable::_fillTable(
+  const std::vector<SimplexTableElement*>& data)
 {
   _data.resize(data.size());
   for (std::size_t i = 0; i < _data.size(); ++i)
@@ -80,16 +82,17 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   return res;
 }
 /*============================================================================*/
-void SimplexTable::_swapBasic(const ResolutionElement& resolution)
+void SimplexTable::_swapBasic(
+  const ResolutionElement& resolution)
 {
   unsigned int tmp = _basis[resolution.vertIndex];
   _basis[resolution.vertIndex] = _notBasis[resolution.horIndex];
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
-void SimplexTable::RebuildTable()
+void SimplexTable::RebuildTable(
+  const ResolutionElement& resolution)
 {
-  ResolutionElement resolution = _getResolutionElement();
   _swapBasic(resolution);
   SimplexTableData oldData = _data;
 
@@ -109,10 +112,11 @@ void SimplexTable::RebuildTable()
 
   for (unsigned int i = 0; i < _data.back().size(); ++i)
     if (_data.back()[i] < mpq_class(0))
-      RebuildTable();
+      RebuildTable(_getResolutionElement());
 }
 /*============================================================================*/
-void SimplexTable::AddRaw(SimplexTableElement* element)
+void SimplexTable::AddRaw(
+  SimplexTableElement* element)
 {
   _basis.emplace_back(_basis.size() + _notBasis.size());
   _data.resize(_basis.size() + 1);
@@ -121,6 +125,7 @@ void SimplexTable::AddRaw(SimplexTableElement* element)
   assert(element->GetData().size() == _data[0].size());
 
   _data.back() = element->GetData();
+  std::swap(_data.back(), _data[_data.size() - 2]);
 }
 /*============================================================================*/
 std::ostream& operator<<(

@@ -12,8 +12,9 @@ private:
 private:
   void _toCanonical() override;
 public:
-  InequalityElement(const std::vector<mpq_class>& data,
-                    InequalitySignType::InequalitySignType type);
+  InequalityElement(
+    const std::vector<mpq_class>& data,
+    InequalitySignType::InequalitySignType type);
 };
 /*============================================================================*/
 #endif // INEQUALITY_ELEMENT_H

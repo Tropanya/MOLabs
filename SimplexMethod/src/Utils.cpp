@@ -3,12 +3,15 @@
 #include <SimplexMethod/InequalityElement.h>
 #include <SimplexMethod/ObjectiveElement.h>
 /*============================================================================*/
-mpq_class Dot(const Point& p1, const Point& p2)
+mpq_class Dot(
+  const Point& p1,
+  const Point& p2)
 {
   return (p1.x * p2.x) + (p1.y * p2.y);
 }
 /*============================================================================*/
-bool IsBasis(const Point& point)
+bool IsBasis(
+  const Point& point)
 {
   if ((Dot(point, { mpq_class(1), mpq_class(0) }) == 0) ||
     (Dot(point, { mpq_class(0), mpq_class(1) }) == 0))
@@ -72,9 +75,15 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   }
 
   return data;
+}/*============================================================================*/
+mpq_class GetTotalPart(
+  const mpq_class& improperFraction)
+{
+  return improperFraction.get_num() / improperFraction.get_den();
 }
 /*============================================================================*/
-mpq_class GetProperFraction(const mpq_class& improperFraction)
+mpq_class GetProperFraction(
+  const mpq_class& improperFraction)
 {
   return improperFraction -
     (improperFraction.get_num() / improperFraction.get_den());
