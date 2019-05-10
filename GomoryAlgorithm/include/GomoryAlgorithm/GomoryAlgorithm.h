@@ -5,8 +5,13 @@
 /*============================================================================*/
 class GomoryAlgorithm
 {
+private:
+  void _createAdditionalRestriction(
+    unsigned int index,
+    SimplexTable& table);
 public:
-  GomoryAlgorithm(const SimplexTable& table);
+  GomoryAlgorithm(
+    SimplexTable& table);
 };
 /*============================================================================*/
 #endif // GOMORY_ALGORITHM_H

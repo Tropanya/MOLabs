@@ -2,6 +2,7 @@
 #include <SimplexMethod/Utils.h>
 
 #include <iostream>
+#include <GomoryAlgorithm/GomoryAlgorithm.h>
 /*============================================================================*/
 /*class MixedFraction
 {
@@ -44,7 +45,9 @@ int main()
   data = CreateSimplexTableDataFromPoints(data, points);
 
   SimplexTable table(2, 3, data);
-  std::cout << table;
+  std::cout << table << std::endl;
+
+  GomoryAlgorithm g(table);
 
   return 0;
 }
