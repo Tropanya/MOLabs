@@ -46,6 +46,8 @@ public:
 
   inline unsigned int GetVariableCount() const { return _notBasis.size(); }
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
+  inline const std::vector<mpq_class> GetSolutionVars() const
+  { return _solutionVars; }
 
   inline const std::vector<unsigned int>& GetBasic() const { return _basis; }
   inline const std::vector<mpq_class> GetRaw(
