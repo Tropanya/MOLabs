@@ -1,24 +1,8 @@
 #include <SimplexMethod/SimplexTable.h>
-#include <SimplexMethod/Utils.h>
-
-#include <iostream>
 #include <GomoryAlgorithm/GomoryAlgorithm.h>
+#include <SimplexMethod/Utils.h>
 /*============================================================================*/
-/*class MixedFraction
-{
-public:
-  MixedFraction(const mpq_class& improperFraction):
-    _totalPart(improperFraction.get_num() / improperFraction.get_den()),
-    _properFraction(
-      improperFraction - (improperFraction.get_num() / improperFraction.get_den()))
-  {  }
-
-  const mpz_class& GetTotalPart() { return _totalPart; }
-  const mpq_class& GetProperFraction() { return _properFraction; }
-private:
-  mpz_class _totalPart;
-  mpq_class _properFraction;
-};*/
+#include <iostream>
 /*============================================================================*/
 int main()
 {
@@ -47,7 +31,7 @@ int main()
   SimplexTable table(2, 3, data);
   std::cout << table << std::endl;
 
-  GomoryAlgorithm g(table);
+  GomoryAlgorithm gomory(table);
   std::cout << table << std::endl;
 
   return 0;
