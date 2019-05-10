@@ -30,4 +30,6 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   std::vector<SimplexTableElement*>& data,
   const std::vector<Point>& points);
 /*============================================================================*/
+mpq_class GetProperFraction(const mpq_class& improperFraction);
+/*============================================================================*/
 #endif // UTILS_H

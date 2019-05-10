@@ -32,6 +32,11 @@ public:
 
   friend std::ostream& operator<<(std::ostream& stream,
                                   const SimplexTable& table);
+
+  unsigned int GetVariableCount() const { return _notBasis.size(); }
+  unsigned int GetRestrictionCount() const { return _basis.size(); }
+
+  const std::vector<unsigned int>& GetBasic() const { return _basis; }
 };
 /*============================================================================*/
 #endif // SIMPLEX_TABLE_H
