@@ -47,40 +47,44 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   ResolutionElement res;
   res.horIndex = 0;
   res.vertIndex = 0;
-  res.resolutionVal = mpq_class(0);
+  res.resolutionVal = mpq_class(-1);
 
   mpq_class cmpVal(0);
 
-  for (unsigned int i = 0; i < _data.back().size(); ++i)
+  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+  {
     if (_data.back()[i] <= cmpVal)
     {
       res.horIndex = i;
       cmpVal = _data.back()[i];
     }
+  }
 
-  cmpVal = mpq_class(0);
   bool isFirst = true;
 
-  for (unsigned int i = 0; i < _data.size(); ++i)
+  for (unsigned int i = 0; i < _data.size() - 1; ++i)
+  {
     if (_data[i][res.horIndex] > mpq_class(0))
     {
-      mpq_class tmp = _data[i].back() / _data[i][res.horIndex];
+      cmpVal = _data[i].back() / _data[i][res.horIndex];
 
       if (isFirst)
       {
         res.vertIndex = i;
-        cmpVal = tmp;
+        res.resolutionVal = cmpVal;
         isFirst = false;
       }
       else
-        if (tmp <= cmpVal)
+        if (cmpVal <= res.resolutionVal)
         {
           res.vertIndex = i;
-          cmpVal = tmp;
+          res.resolutionVal = cmpVal;
         }
     }
+  }
 
   res.resolutionVal = _data[res.vertIndex][res.horIndex];
+  assert(res.resolutionVal > 0);
 
   return res;
 }
@@ -139,6 +143,12 @@ void SimplexTable::AddRaw(
 
   _data.back() = element->GetData();
   std::swap(_data.back(), _data[_data.size() - 2]);
+}
+/*============================================================================*/
+void SimplexTable::InvertRaw(unsigned int index)
+{
+  for (unsigned int i = 0; i < _data[index].size(); ++i)
+    _data[index][i] = mpq_class(-1) * _data[index][i];
 }
 /*============================================================================*/
 std::ostream& operator<<(

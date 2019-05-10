@@ -39,6 +39,9 @@ public:
   void AddRaw(
     SimplexTableElement* element);
 
+  void InvertRaw(
+    unsigned int index);
+
   inline unsigned int GetVariableCount() const { return _notBasis.size(); }
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
 
