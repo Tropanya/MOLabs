@@ -20,7 +20,7 @@ SimplexTable::SimplexTable(
     _basis.emplace_back(i + variableCount);
 
   _fillTable(data);
-  _rebuildTable();
+  RebuildTable();
 }
 /*============================================================================*/
 void SimplexTable::_fillTable(const std::vector<SimplexTableElement*>& data)
@@ -87,7 +87,7 @@ void SimplexTable::_swapBasic(const ResolutionElement& resolution)
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
-void SimplexTable::_rebuildTable()
+void SimplexTable::RebuildTable()
 {
   ResolutionElement resolution = _getResolutionElement();
   _swapBasic(resolution);
@@ -109,7 +109,18 @@ void SimplexTable::_rebuildTable()
 
   for (unsigned int i = 0; i < _data.back().size(); ++i)
     if (_data.back()[i] < mpq_class(0))
-      _rebuildTable();
+      RebuildTable();
+}
+/*============================================================================*/
+void SimplexTable::AddRaw(SimplexTableElement* element)
+{
+  _basis.emplace_back(_basis.size() + _notBasis.size());
+  _data.resize(_basis.size() + 1);
+  _data.back().resize(element->GetData().size());
+
+  assert(element->GetData().size() == _data[0].size());
+
+  _data.back() = element->GetData();
 }
 /*============================================================================*/
 std::ostream& operator<<(

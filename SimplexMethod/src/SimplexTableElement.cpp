@@ -1,11 +1,11 @@
 #include "SimplexMethod/SimplexTableElement.h"
 /*============================================================================*/
-#include <iostream>
-/*============================================================================*/
 SimplexTableElement::SimplexTableElement(
   const SimplexTableElementData& data):
   _data(data)
-{  }
+{
+  _toCanonical();
+}
 /*============================================================================*/
 SimplexTableElement::~SimplexTableElement()
 {  }

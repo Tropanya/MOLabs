@@ -13,11 +13,11 @@ class SimplexTableElement
 protected:
   SimplexTableElementData _data;
 private:
-  virtual void _toCanonical() = 0;
-protected:
-  SimplexTableElement(const SimplexTableElementData& data);
+  virtual void _toCanonical() {  };
 public:
+  SimplexTableElement(const SimplexTableElementData& data);
   virtual ~SimplexTableElement();
+
   inline const SimplexTableElementData& GetData() const { return _data; }
 };
 /*============================================================================*/

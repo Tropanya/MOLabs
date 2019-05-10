@@ -23,20 +23,21 @@ private:
   void _fillTable(const std::vector<SimplexTableElement*>& data);
   ResolutionElement _getResolutionElement() const;
   void _swapBasic(const ResolutionElement& resolution);
-  void _rebuildTable();
 public:
   SimplexTable(unsigned int variableCount, unsigned int restrictionCount,
                const std::vector<SimplexTableElement*>& data);
 
+  void RebuildTable();
+  void AddRaw(SimplexTableElement* element);
+
+  inline unsigned int GetVariableCount() const { return _notBasis.size(); }
+  inline unsigned int GetRestrictionCount() const { return _basis.size(); }
+
+  inline const std::vector<unsigned int>& GetBasic() const { return _basis; }
   inline const SimplexTableData& GetData() const { return _data; }
 
   friend std::ostream& operator<<(std::ostream& stream,
                                   const SimplexTable& table);
-
-  unsigned int GetVariableCount() const { return _notBasis.size(); }
-  unsigned int GetRestrictionCount() const { return _basis.size(); }
-
-  const std::vector<unsigned int>& GetBasic() const { return _basis; }
 };
 /*============================================================================*/
 #endif // SIMPLEX_TABLE_H
