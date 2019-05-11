@@ -78,7 +78,7 @@ ResolutionElement SimplexTable::_getResolutionElement() const
       }
       else
       {
-        if (cmpVal <= res.resolutionVal)
+        if (cmpVal < res.resolutionVal)
         {
           res.vertIndex = i;
           res.resolutionVal = cmpVal;
@@ -106,11 +106,13 @@ bool SimplexTable::_isOptimalSolution()
   bool res = true;
 
   for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+  {
     if (_data.back()[i] < mpq_class(0))
     {
       res = false;
       break;
     }
+  }
 
   return res;
 }
@@ -122,6 +124,7 @@ void SimplexTable::RebuildTable(
   SimplexTableData oldData = _data;
 
   for (unsigned int i = 0; i < _data.size(); ++i)
+  {
     for (unsigned int j = 0; j < _data[i].size(); ++j)
       if (i == resolution.vertIndex && j == resolution.horIndex)
         _data[i][j] = mpq_class(1) / oldData[i][j];
@@ -134,6 +137,7 @@ void SimplexTable::RebuildTable(
         (resolution.resolutionVal * oldData[i][j] -
           oldData[resolution.vertIndex][j] * oldData[i][resolution.horIndex]) /
           resolution.resolutionVal;
+  }
 
   for (unsigned int i = 0; i < GetVariableCount(); ++i)
   {
@@ -141,10 +145,7 @@ void SimplexTable::RebuildTable(
     if (it != _basis.end())
       _solutionVars[i] = _data[std::distance(_basis.begin(), it)].back();
     else
-    {
-      it = std::find(_notBasis.begin(), _notBasis.end(), 0);
-      _solutionVars[i] = _data[std::distance(_notBasis.begin(), it)].back();
-    }
+      _solutionVars[i] = mpq_class(0);
   }
 }
 /*============================================================================*/
