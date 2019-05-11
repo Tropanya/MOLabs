@@ -2,30 +2,65 @@
 /*============================================================================*/
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
+#include <cassert>
+#include <iostream>
+/*============================================================================*/
 GomoryAlgorithm::GomoryAlgorithm(
-  SimplexTable& table)
+  const SimplexTable& table):
+  _table(table)
 {
-  table.InvertRaw(table.GetData().size() - 1);
+  _table.InvertRaw(_table.GetData().size() - 1);
 
-  while (!_isOptimalSolution(table))
+  while (!_isOptimalSolution())
   {
     unsigned int index = 0;
-    mpq_class cmpVal = GetProperFraction(table.GetData()[index].back());
+    index = _findResolutionIndex();
 
-    for (unsigned int i = 0; i < table.GetVariableCount(); ++i)
-      if (GetProperFraction(table.GetData()[i].back()) > cmpVal)
-        index = i;
-
-    _createAdditionalRestriction(index, table);
-    table.RebuildTable(_getResolutionElement(table));
+    _createAdditionalRestriction(index);
+    _table.RebuildTable(_getResolutionElement());
   }
 }
 /*============================================================================*/
-void GomoryAlgorithm::_createAdditionalRestriction(
-  unsigned int index,
-  SimplexTable& table) const
+unsigned int GomoryAlgorithm::_findResolutionIndex()
 {
-  const std::vector<mpq_class>& raw = table.GetRaw(index);
+  unsigned int resIndex = 0;
+  mpq_class cmpVal(0);
+  bool isFirst = true;
+
+  for (unsigned int i = 0; i < _table.GetSolutionVars().size(); ++i)
+  {
+    if (1 != _table.GetSolutionVars()[i].get_den())
+    {
+      if (isFirst)
+      {
+        resIndex = i;
+        cmpVal = abs(GetProperFraction(_table.GetSolutionVars()[i]));
+        isFirst = false;
+      }
+      else
+      {
+        if (abs(GetProperFraction(_table.GetSolutionVars()[i])) >
+          abs(GetProperFraction(_table.GetSolutionVars()[resIndex])))
+          resIndex = i;
+      }
+    }
+  }
+
+  auto it = std::find(
+    _table.GetBasic().begin(), _table.GetBasic().end(), resIndex);
+
+  if (it != _table.GetBasic().end())
+    resIndex = std::distance(_table.GetBasic().begin(), it);
+  else
+    assert(false);
+
+  return resIndex;
+}
+/*============================================================================*/
+void GomoryAlgorithm::_createAdditionalRestriction(
+  unsigned int index)
+{
+  const std::vector<mpq_class>& raw = _table.GetRaw(index);
 
   std::vector<mpq_class> elementData;
   elementData.resize(raw.size());
@@ -41,52 +76,62 @@ void GomoryAlgorithm::_createAdditionalRestriction(
 
   elementData.back() = mpq_class(-1) * GetProperFraction(raw.back());
 
-  table.AddRaw(&(SimplexTableElement(elementData)));
+  _table.AddRaw(&(SimplexTableElement(elementData)));
 }
 /*============================================================================*/
-ResolutionElement GomoryAlgorithm::_getResolutionElement(
-  const SimplexTable& table) const
+ResolutionElement GomoryAlgorithm::_getResolutionElement() const
 {
   ResolutionElement res;
   res.horIndex = 0;
-  res.vertIndex = table.GetBasic().size() - 1;
+  res.vertIndex = _table.GetBasic().size() - 1;
   res.resolutionVal = mpq_class(-1);
 
   mpq_class cmpVal(0);
   bool isFirst = true;
+  bool find = false;
 
-  for (unsigned int i = 0; i < table.GetData()[res.vertIndex].size() - 1; ++i)
+  for (unsigned int i = 0; i < _table.GetData()[res.vertIndex].size() - 1; ++i)
   {
-    cmpVal = table.GetData().back()[i] / table.GetData()[res.vertIndex][i];
+    if (_table.GetData()[res.vertIndex][i] != mpq_class(0))
+      cmpVal = _table.GetData().back()[i] / _table.GetData()[res.vertIndex][i];
+    else
+      break;
 
     if (isFirst)
     {
       res.horIndex = i;
       res.resolutionVal = cmpVal;
       isFirst = false;
+      find = true;
     }
     else
     {
-      if (cmpVal <= res.resolutionVal)
+      if (cmpVal < res.resolutionVal)
       {
         res.horIndex = i;
         res.resolutionVal = cmpVal;
+        find = true;
       }
     }
   }
 
-  res.resolutionVal = table.GetData()[res.vertIndex][res.horIndex];
+  if (find)
+    res.resolutionVal = _table.GetData()[res.vertIndex][res.horIndex];
+  else
+  {
+    std::cout << "Could not find resolution element.\n";
+    assert(false);
+  }
 
   return res;
 }
 /*============================================================================*/
-bool GomoryAlgorithm::_isOptimalSolution(
-  const SimplexTable& table) const
+bool GomoryAlgorithm::_isOptimalSolution() const
 {
   bool res = true;
 
-  for (unsigned int i = 0; i < table.GetVariableCount(); ++i)
-    if (1 != table.GetSolutionVars()[i].get_den())
+  for (unsigned int i = 0; i < _table.GetVariableCount(); ++i)
+    if (1 != _table.GetSolutionVars()[i].get_den())
       res &= false;
 
   return res;

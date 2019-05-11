@@ -6,16 +6,18 @@
 class GomoryAlgorithm
 {
 private:
+  SimplexTable _table;
+private:
+  unsigned int _findResolutionIndex();
   void _createAdditionalRestriction(
-    unsigned int index,
-    SimplexTable& table) const;
-  ResolutionElement _getResolutionElement(
-    const SimplexTable& table) const;
-  bool _isOptimalSolution(
-    const SimplexTable& table) const;
+    unsigned int index);
+  ResolutionElement _getResolutionElement() const;
+  bool _isOptimalSolution() const;
 public:
   GomoryAlgorithm(
-    SimplexTable& table);
+    const SimplexTable& table);
+
+  const SimplexTable& GetTable() const { return _table; }
 };
 /*============================================================================*/
 #endif // GOMORY_ALGORITHM_H
