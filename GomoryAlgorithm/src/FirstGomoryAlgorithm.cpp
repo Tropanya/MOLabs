@@ -21,8 +21,13 @@ void FirstGomoryAlgorithm::_createAdditionalRestriction(
   for (unsigned int i = 0; i < elementData.size() - 1; ++i)
   {
     if (raw[i] < mpq_class(0))
-      elementData[i] =
-      mpq_class(-1) * (raw[i] - (GetTotalPart(raw[i]) - mpq_class(1)));
+    {
+      if (1 == raw[i].get_den())
+        elementData[i] = mpq_class(0);
+      else
+        elementData[i] =
+          mpq_class(-1) * (raw[i] - (GetTotalPart(raw[i]) - mpq_class(1)));
+    }
     else
       elementData[i] = mpq_class(-1) * GetProperFraction(raw[i]);
   }

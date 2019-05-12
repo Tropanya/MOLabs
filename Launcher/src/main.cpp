@@ -36,6 +36,13 @@ int main()
 
   //std::vector<SimplexTableElement*> data =
   //{
+  //  new SimplexTableElement({ mpq_class(2), mpq_class(4), mpq_class(7) }),
+  //  new SimplexTableElement({ mpq_class(4), mpq_class(-5), mpq_class(9) }),
+  //  new SimplexTableElement({ mpq_class(1), mpq_class(2), mpq_class(0) }),
+  //};
+
+  //std::vector<SimplexTableElement*> data =
+  //{
   //  new SimplexTableElement({ mpq_class(1), mpq_class(2), mpq_class(3), mpq_class(35) }),
   //  new SimplexTableElement({ mpq_class(4), mpq_class(3), mpq_class(2), mpq_class(45) }),
   //  new SimplexTableElement({ mpq_class(3), mpq_class(1), mpq_class(1), mpq_class(40) }),

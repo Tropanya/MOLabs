@@ -59,7 +59,7 @@ ResolutionElement GomoryAlgorithm::_getResolutionElement() const
     if (_table.GetData()[res.vertIndex][i] != mpq_class(0))
       cmpVal = _table.GetData().back()[i] / _table.GetData()[res.vertIndex][i];
     else
-      break;
+      continue;
 
     if (isFirst)
     {
