@@ -1,5 +1,6 @@
 #include <SimplexMethod/SimplexTable.h>
 #include <GomoryAlgorithm/GomoryAlgorithm.h>
+#include <GomoryAlgorithm/FirstGomoryAlgorithm.h>
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
 #include <iostream>
@@ -26,13 +27,29 @@ int main()
   //  { mpq_class(3), mpq_class(8) }
   //};
 
+  //std::vector<SimplexTableElement*> data =
+  //{
+  //  new SimplexTableElement({ mpq_class(5), mpq_class(7), mpq_class(21) }),
+  //  new SimplexTableElement({ mpq_class(-1), mpq_class(3), mpq_class(8) }),
+  //  new SimplexTableElement({ mpq_class(1), mpq_class(2), mpq_class(0) }),
+  //};
+
+  //std::vector<SimplexTableElement*> data =
+  //{
+  //  new SimplexTableElement({ mpq_class(1), mpq_class(2), mpq_class(3), mpq_class(35) }),
+  //  new SimplexTableElement({ mpq_class(4), mpq_class(3), mpq_class(2), mpq_class(45) }),
+  //  new SimplexTableElement({ mpq_class(3), mpq_class(1), mpq_class(1), mpq_class(40) }),
+  //  new SimplexTableElement({ mpq_class(4), mpq_class(5), mpq_class(6), mpq_class(0) })
+  //};
+
   data = CreateSimplexTableDataFromPoints(data, points);
 
   SimplexTable table(2, 3, data);
   std::cout << table << std::endl;
 
-  GomoryAlgorithm gomory(table);
-  std::cout << gomory.GetTable() << std::endl;
+  GomoryAlgorithm* firstGomory = new FirstGomoryAlgorithm(table);
+  firstGomory->Compute();
+  std::cout << firstGomory->GetTable() << std::endl;
 
   return 0;
 }
