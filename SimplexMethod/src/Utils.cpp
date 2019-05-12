@@ -75,17 +75,22 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   }
 
   return data;
-}/*============================================================================*/
-mpq_class GetTotalPart(
-  const mpq_class& improperFraction)
-{
-  return improperFraction.get_num() / improperFraction.get_den();
 }
 /*============================================================================*/
 mpq_class GetProperFraction(
-  const mpq_class& improperFraction)
+  const mpq_class& impropFraction)
 {
-  return improperFraction -
-    (improperFraction.get_num() / improperFraction.get_den());
+  mpq_class tmpImpropFraction =
+    impropFraction - (impropFraction.get_num() / impropFraction.get_den());
+
+  if (tmpImpropFraction < mpq_class(0))
+  {
+    if (1 == tmpImpropFraction.get_den())
+      return mpq_class(0);
+    else
+      return impropFraction - (tmpImpropFraction - mpq_class(1));
+  }
+  else
+    return tmpImpropFraction;
 }
 /*============================================================================*/

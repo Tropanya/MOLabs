@@ -18,21 +18,8 @@ void FirstGomoryAlgorithm::_createAdditionalRestriction(
   std::vector<mpq_class> elementData;
   elementData.resize(raw.size());
 
-  for (unsigned int i = 0; i < elementData.size() - 1; ++i)
-  {
-    if (raw[i] < mpq_class(0))
-    {
-      if (1 == raw[i].get_den())
-        elementData[i] = mpq_class(0);
-      else
-        elementData[i] =
-          mpq_class(-1) * (raw[i] - (GetTotalPart(raw[i]) - mpq_class(1)));
-    }
-    else
-      elementData[i] = mpq_class(-1) * GetProperFraction(raw[i]);
-  }
-
-  elementData.back() = mpq_class(-1) * GetProperFraction(raw.back());
+  for (unsigned int i = 0; i < elementData.size(); ++i)
+    elementData[i] = mpq_class(-1) * GetProperFraction(raw[i]);
 
   _table.AddRaw(&(SimplexTableElement(elementData)));
 }

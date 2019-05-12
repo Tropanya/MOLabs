@@ -18,8 +18,8 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 
   for (unsigned int i = 0; i < _table.GetRestrictionCount(); ++i)
   {
-    auto it = std::find(
-      _intSolutionVars.begin(), _intSolutionVars.end(), _table.GetBasic()[i]);
+    auto it = std::find(_intSolutionVars.begin(), _intSolutionVars.end(),
+                        _table.GetBasic()[i]);
 
     if (it != _intSolutionVars.end())
     {
@@ -32,8 +32,8 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
         }
         else
         {
-          if (abs(GetProperFraction(_table.GetData()[i].back())) >
-              abs(GetProperFraction(_table.GetData()[resIndex].back())))
+          if (GetProperFraction(_table.GetData()[i].back()) >
+              GetProperFraction(_table.GetData()[resIndex].back()))
             resIndex = i;
         }
       }
