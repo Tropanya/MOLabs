@@ -4,6 +4,7 @@
 #include <SimplexMethod/SimplexTableElement.h>
 /*============================================================================*/
 typedef std::vector<SimplexTableElementData> SimplexTableData;
+typedef std::vector<unsigned int> VarIndices;
 /*============================================================================*/
 struct ResolutionElement
 {
@@ -17,8 +18,8 @@ class SimplexTable
 private:
   bool _isOptimal;
 
-  std::vector<unsigned int> _basis;
-  std::vector<unsigned int> _notBasis;
+  VarIndices _basis;
+  VarIndices _notBasis;
 
   std::vector<mpq_class> _solutionVars;
 
@@ -49,7 +50,8 @@ public:
   inline const std::vector<mpq_class> GetSolutionVars() const
   { return _solutionVars; }
 
-  inline const std::vector<unsigned int>& GetBasic() const { return _basis; }
+  inline const VarIndices& GetBasic() const { return _basis; }
+  inline const VarIndices& GetNotBasic() const { return _notBasis; }
   inline const std::vector<mpq_class> GetRaw(
     unsigned int index) const { return _data[index]; }
   inline const SimplexTableData& GetData() const { return _data; }

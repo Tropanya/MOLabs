@@ -9,7 +9,7 @@ private:
   bool _isOptimal;
   mutable bool _isExistSolution;
 protected:
-  std::vector<unsigned int> _intSolutionVars;
+  VarIndices _intSolutionVars;
   SimplexTable _table;
 private:
   virtual void _createAdditionalRestriction(
