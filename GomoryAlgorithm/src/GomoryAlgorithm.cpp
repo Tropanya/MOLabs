@@ -7,76 +7,41 @@
 /*============================================================================*/
 GomoryAlgorithm::GomoryAlgorithm(
   const SimplexTable& table):
-  _table(table)
-{
-  _table.InvertRaw(_table.GetData().size() - 1);
-
-  while (!_isOptimalSolution())
-  {
-    unsigned int index = 0;
-    index = _findResolutionIndex();
-
-    _createAdditionalRestriction(index);
-    _table.RebuildTable(_getResolutionElement());
-  }
-}
+  _table(table),
+  _isExistSolution(true)
+{  }
 /*============================================================================*/
-unsigned int GomoryAlgorithm::_findResolutionIndex()
+unsigned int GomoryAlgorithm::_findResolutionIndex() const
 {
   unsigned int resIndex = 0;
   mpq_class cmpVal(0);
   bool isFirst = true;
 
-  for (unsigned int i = 0; i < _table.GetSolutionVars().size(); ++i)
+  for (unsigned int i = 0; i < _table.GetRestrictionCount(); ++i)
   {
-    if (1 != _table.GetSolutionVars()[i].get_den())
+    auto it = std::find(
+      _intSolutionVars.begin(), _intSolutionVars.end(), _table.GetBasic()[i]);
+
+    if (it != _intSolutionVars.end())
     {
-      if (isFirst)
+      if (1 != _table.GetData()[i].back().get_den())
       {
-        resIndex = i;
-        cmpVal = abs(GetProperFraction(_table.GetSolutionVars()[i]));
-        isFirst = false;
-      }
-      else
-      {
-        if (abs(GetProperFraction(_table.GetSolutionVars()[i])) >
-          abs(GetProperFraction(_table.GetSolutionVars()[resIndex])))
+        if (isFirst)
+        {
           resIndex = i;
+          isFirst = false;
+        }
+        else
+        {
+          if (abs(GetProperFraction(_table.GetData()[i].back())) >
+              abs(GetProperFraction(_table.GetData()[resIndex].back())))
+            resIndex = i;
+        }
       }
     }
   }
 
-  auto it = std::find(
-    _table.GetBasic().begin(), _table.GetBasic().end(), resIndex);
-
-  if (it != _table.GetBasic().end())
-    resIndex = std::distance(_table.GetBasic().begin(), it);
-  else
-    assert(false);
-
   return resIndex;
-}
-/*============================================================================*/
-void GomoryAlgorithm::_createAdditionalRestriction(
-  unsigned int index)
-{
-  const std::vector<mpq_class>& raw = _table.GetRaw(index);
-
-  std::vector<mpq_class> elementData;
-  elementData.resize(raw.size());
-
-  for (unsigned int i = 0; i < elementData.size() - 1; ++i)
-  {
-    if (raw[i] < mpq_class(0))
-      elementData[i] =
-        mpq_class(-1) * (raw[i] - (GetTotalPart(raw[i]) - mpq_class(1)));
-    else
-      elementData[i] = mpq_class(-1) * GetProperFraction(raw[i]);
-  }
-
-  elementData.back() = mpq_class(-1) * GetProperFraction(raw.back());
-
-  _table.AddRaw(&(SimplexTableElement(elementData)));
 }
 /*============================================================================*/
 ResolutionElement GomoryAlgorithm::_getResolutionElement() const
@@ -120,7 +85,7 @@ ResolutionElement GomoryAlgorithm::_getResolutionElement() const
   else
   {
     std::cout << "Could not find resolution element.\n";
-    assert(false);
+    _isExistSolution = false;
   }
 
   return res;
@@ -130,10 +95,33 @@ bool GomoryAlgorithm::_isOptimalSolution() const
 {
   bool res = true;
 
-  for (unsigned int i = 0; i < _table.GetVariableCount(); ++i)
-    if (1 != _table.GetSolutionVars()[i].get_den())
+  for (unsigned int i = 0; i < _intSolutionVars.size(); ++i)
+    if (1 != _table.GetSolutionVars()[_intSolutionVars[i]].get_den())
       res &= false;
 
   return res;
+}
+/*============================================================================*/
+void GomoryAlgorithm::Compute()
+{
+  ResolutionElement resElem;
+
+  _table.InvertRaw(_table.GetData().size() - 1);
+
+  while (!_isOptimalSolution())
+  {
+    unsigned int index = 0;
+    index = _findResolutionIndex();
+
+    _createAdditionalRestriction(index);
+
+    resElem = _getResolutionElement();
+    if (_isExistSolution)
+      _table.RebuildTable(resElem);
+    else
+      break;
+  }
+
+  _isOptimal = _isOptimalSolution();
 }
 /*============================================================================*/
