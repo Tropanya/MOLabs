@@ -1,6 +1,6 @@
 #include <SimplexMethod/SimplexTable.h>
-#include <GomoryAlgorithm/GomoryAlgorithm.h>
 #include <GomoryAlgorithm/FirstGomoryAlgorithm.h>
+#include <GomoryAlgorithm/SecondGomoryAlgorithm.h>
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
 #include <iostream>
@@ -57,6 +57,10 @@ int main()
   GomoryAlgorithm* firstGomory = new FirstGomoryAlgorithm(table);
   firstGomory->Compute();
   std::cout << firstGomory->GetTable() << std::endl;
+
+  GomoryAlgorithm* secondGomory = new SecondGomoryAlgorithm({ 0, 1 }, table);
+  secondGomory->Compute();
+  std::cout << secondGomory->GetTable() << std::endl;
 
   return 0;
 }
