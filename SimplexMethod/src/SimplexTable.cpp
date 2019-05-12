@@ -101,7 +101,7 @@ void SimplexTable::_swapBasic(
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
-bool SimplexTable::_isOptimalSolution()
+bool SimplexTable::_isOptimalSolution() const
 {
   bool res = true;
 
