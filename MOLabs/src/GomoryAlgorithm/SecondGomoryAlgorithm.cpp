@@ -31,7 +31,8 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
         elementData[i] = GetProperFraction(raw[i]);
       else
         elementData[i] =
-          (B / (mpq_class(1) - B)) * (mpq_class(1) - GetProperFraction(raw[i]));
+          (B / (mpq_class(1) - B)) *
+            (mpq_class(1) - GetProperFraction(raw[i]));
     }
     else
     {
@@ -39,7 +40,8 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
         elementData[i] = raw[i];
       else
         elementData[i] =
-          (B / (mpq_class(1) - B)) * (mpq_class(-1) * GetProperFraction(raw[i]));
+          (B / (mpq_class(1) - B)) *
+            (mpq_class(-1) * GetProperFraction(raw[i]));
     }
   }
 

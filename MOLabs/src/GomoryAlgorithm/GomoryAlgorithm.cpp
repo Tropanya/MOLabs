@@ -2,8 +2,6 @@
 /*============================================================================*/
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
-#include <iostream>
-/*============================================================================*/
 GomoryAlgorithm::GomoryAlgorithm(
   const SimplexTable& table):
   _table(table)
@@ -15,9 +13,9 @@ GomoryAlgorithm::~GomoryAlgorithm()
 unsigned int GomoryAlgorithm::_findResolutionIndex() const
 {
   unsigned int resIndex = 0;
+
   mpq_class cmpVal(0);
   bool isFirst = true;
-
   for (unsigned int i = 0; i < _table.GetRestrictionCount(); ++i)
   {
     auto it = std::find(_intSolutionVars.begin(), _intSolutionVars.end(),
@@ -62,10 +60,7 @@ void GomoryAlgorithm::Compute()
 
   while (!_isOptimalSolution())
   {
-    unsigned int index = 0;
-    index = _findResolutionIndex();
-    _createAdditionalRestriction(index);
-
+    _createAdditionalRestriction(_findResolutionIndex());
     _table.DualSimplexMethod();
   }
 }
