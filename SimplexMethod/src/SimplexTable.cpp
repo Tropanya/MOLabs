@@ -23,6 +23,7 @@ SimplexTable::SimplexTable(
 
   _fillTable(data);
 
+  _dualSimplexMesthod();
   while (!_isOptimalSolution())
     RebuildTable(_getResolutionElement());
 
@@ -42,6 +43,72 @@ void SimplexTable::_fillTable(
 
   for (std::size_t i = 0; i < data.back()->GetData().size(); ++i)
     _data.back()[i] = mpq_class(-1) * data.back()->GetData()[i];
+}
+/*============================================================================*/
+ResolutionElement SimplexTable::_getResolutionElementDualSimplexMethod() const
+{
+  ResolutionElement res;
+  res.horIndex = 0;
+  res.vertIndex = 0;
+  res.resolutionVal = mpq_class(-1);
+
+  mpq_class cmpVal(0);
+  bool isFirst = true;
+  for (unsigned int i = 0; i < _basis.size(); ++i)
+  {
+    if (_data[i].back() < mpq_class(0))
+    {
+      if (isFirst)
+      {
+        res.vertIndex = i;
+        cmpVal = abs(_data[i].back());
+        isFirst = false;
+      }
+      else
+      {
+        if (abs(_data[i].back()) > cmpVal)
+        {
+          res.vertIndex = i;
+          cmpVal = abs(_data[i].back());
+        }
+      }
+    }
+  }
+
+  cmpVal = 0;
+  isFirst = true;
+  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  {
+    if (_data[res.vertIndex][i] < mpq_class(0))
+    {
+      cmpVal = abs(_data.back()[i] / _data[res.vertIndex][i]);
+
+      if (isFirst)
+      {
+        res.horIndex = i;
+        res.resolutionVal = cmpVal;
+        isFirst = false;
+      }
+      else
+      {
+        if (cmpVal < res.resolutionVal)
+        {
+          res.horIndex = i;
+          res.resolutionVal = cmpVal;
+        }
+      }
+    }
+  }
+
+  res.resolutionVal = _data[res.vertIndex][res.horIndex];
+
+  return res;
+}
+/*============================================================================*/
+void SimplexTable::_dualSimplexMesthod()
+{
+  while (_hasNegativeAbsoluteTerms())
+    RebuildTable(_getResolutionElementDualSimplexMethod());
 }
 /*============================================================================*/
 ResolutionElement SimplexTable::_getResolutionElement() const
@@ -101,6 +168,15 @@ void SimplexTable::_swapBasic(
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
+bool SimplexTable::_hasNegativeAbsoluteTerms() const
+{
+  for (unsigned int i = 0; i < _basis.size(); ++i)
+    if (_data[i].back() < mpq_class(0))
+      return true;
+
+  return false;
+}
+/*============================================================================*/
 bool SimplexTable::_isOptimalSolution() const
 {
   bool res = true;
@@ -118,25 +194,26 @@ bool SimplexTable::_isOptimalSolution() const
 }
 /*============================================================================*/
 void SimplexTable::RebuildTable(
-  const ResolutionElement& resolution)
+  const ResolutionElement& resolElem)
 {
-  _swapBasic(resolution);
+  _swapBasic(resolElem);
   SimplexTableData oldData = _data;
 
   for (unsigned int i = 0; i < _data.size(); ++i)
   {
     for (unsigned int j = 0; j < _data[i].size(); ++j)
-      if (i == resolution.vertIndex && j == resolution.horIndex)
+    {
+      if (i == resolElem.vertIndex && j == resolElem.horIndex)
         _data[i][j] = mpq_class(1) / oldData[i][j];
-      else if (i == resolution.vertIndex)
-        _data[i][j] = oldData[i][j] / resolution.resolutionVal;
-      else if (j == resolution.horIndex)
-        _data[i][j] = mpq_class(-1) * (oldData[i][j] / resolution.resolutionVal);
+      else if (i == resolElem.vertIndex)
+        _data[i][j] = oldData[i][j] / resolElem.resolutionVal;
+      else if (j == resolElem.horIndex)
+        _data[i][j] = mpq_class(-1) * (oldData[i][j] / resolElem.resolutionVal);
       else
-        _data[i][j] =
-        (resolution.resolutionVal * oldData[i][j] -
-          oldData[resolution.vertIndex][j] * oldData[i][resolution.horIndex]) /
-          resolution.resolutionVal;
+        _data[i][j] = (resolElem.resolutionVal * oldData[i][j] -
+          oldData[resolElem.vertIndex][j] * oldData[i][resolElem.horIndex]) /
+            resolElem.resolutionVal;
+    }
   }
 
   for (unsigned int i = 0; i < GetVariableCount(); ++i)
@@ -162,7 +239,8 @@ void SimplexTable::AddRaw(
   std::swap(_data.back(), _data[_data.size() - 2]);
 }
 /*============================================================================*/
-void SimplexTable::InvertRaw(unsigned int index)
+void SimplexTable::InvertRaw(
+  unsigned int index)
 {
   for (unsigned int i = 0; i < _data[index].size(); ++i)
     _data[index][i] = mpq_class(-1) * _data[index][i];

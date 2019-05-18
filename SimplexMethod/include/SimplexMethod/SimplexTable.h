@@ -27,9 +27,12 @@ private:
 private:
   void _fillTable(
     const std::vector<SimplexTableElement*>& data);
+  ResolutionElement _getResolutionElementDualSimplexMethod() const;
+  void _dualSimplexMesthod();
   ResolutionElement _getResolutionElement() const;
   void _swapBasic(
     const ResolutionElement& resolution);
+  bool _hasNegativeAbsoluteTerms() const;
   bool _isOptimalSolution() const;
 public:
   SimplexTable(
