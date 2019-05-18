@@ -9,6 +9,9 @@ GomoryAlgorithm::GomoryAlgorithm(
   _table(table)
 {  }
 /*============================================================================*/
+GomoryAlgorithm::~GomoryAlgorithm()
+{  }
+/*============================================================================*/
 unsigned int GomoryAlgorithm::_findResolutionIndex() const
 {
   unsigned int resIndex = 0;

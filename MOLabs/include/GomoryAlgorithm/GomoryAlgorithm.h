@@ -18,6 +18,8 @@ protected:
   GomoryAlgorithm(
     const SimplexTable& table);
 public:
+  virtual ~GomoryAlgorithm();
+
   void Compute();
 
   const SimplexTable& GetTable() const { return _table; }
