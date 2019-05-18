@@ -6,7 +6,8 @@
 SimplexTable::SimplexTable(
   unsigned int variableCount,
   unsigned int restrictionCount,
-  const std::vector<SimplexTableElement*>& data)
+  const std::vector<SimplexTableElement*>& data):
+  _isExistSolution(true)
 {
   assert((restrictionCount == data.size() - 1) &&
     "Restriction count fail!");
@@ -44,7 +45,7 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   ResolutionElement res;
   res.horIndex = 0;
   res.vertIndex = 0;
-  res.resolutionVal = mpq_class(-1);
+  res.resolutionVal = mpq_class(0);
 
   mpq_class cmpVal(0);
   bool isFirst = true;
@@ -69,7 +70,22 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
     }
   }
 
-  cmpVal = 0;
+  _isExistSolution = false;
+  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  {
+    if (_data[res.vertIndex][i] < mpq_class(0))
+    {
+      _isExistSolution = true;
+      break;
+    }
+  }
+
+  if (!_isExistSolution)
+  {
+    std::cout << "Not exist solution\n";
+    return { 0, 0, mpq_class(0) };
+  }
+
   isFirst = true;
   for (unsigned int i = 0; i < _notBasis.size(); ++i)
   {
@@ -95,7 +111,6 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   }
 
   res.resolutionVal = _data[res.vertIndex][res.horIndex];
-
   return res;
 }
 /*============================================================================*/
@@ -104,11 +119,10 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   ResolutionElement res;
   res.horIndex = 0;
   res.vertIndex = 0;
-  res.resolutionVal = mpq_class(-1);
+  res.resolutionVal = mpq_class(0);
 
   mpq_class cmpVal(0);
-
-  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+  for (unsigned int i = 0; i < _notBasis.size(); ++i)
   {
     if (_data.back()[i] <= cmpVal)
     {
@@ -117,9 +131,24 @@ ResolutionElement SimplexTable::_getResolutionElement() const
     }
   }
 
-  bool isFirst = true;
+  _isExistSolution = false;
+  for (unsigned int i = 0; i < _basis.size(); ++i)
+  {
+    if (_data[i][res.horIndex] > mpq_class(0))
+    {
+      _isExistSolution = true;
+      break;
+    }
+  }
 
-  for (unsigned int i = 0; i < _data.size() - 1; ++i)
+  if (!_isExistSolution)
+  {
+    std::cout << "Not exist solution\n";
+    return { 0, 0, mpq_class(0) };
+  }
+
+  bool isFirst = true;
+  for (unsigned int i = 0; i < _basis.size(); ++i)
   {
     if (_data[i][res.horIndex] > mpq_class(0))
     {
@@ -143,8 +172,6 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   }
 
   res.resolutionVal = _data[res.vertIndex][res.horIndex];
-  assert(res.resolutionVal > 0);
-
   return res;
 }
 /*============================================================================*/
@@ -178,7 +205,7 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
     }
   }
 
-  for (unsigned int i = 0; i < GetVariableCount(); ++i)
+  for (unsigned int i = 0; i < _notBasis.size(); ++i)
   {
     auto it = std::find(_basis.begin(), _basis.end(), i);
     if (it != _basis.end())
@@ -201,7 +228,7 @@ bool SimplexTable::_isOptimalSolution() const
 {
   bool res = true;
 
-  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+  for (unsigned int i = 0; i < _notBasis.size(); ++i)
   {
     if (_data.back()[i] < mpq_class(0))
     {
@@ -216,13 +243,15 @@ bool SimplexTable::_isOptimalSolution() const
 void SimplexTable::DualSimplexMethod()
 {
   while (_hasNegativeAbsoluteTerms())
-    _simplexMethod(_getResolutionElementDual());
+    if(_isExistSolution)
+      _simplexMethod(_getResolutionElementDual());
 }
 /*============================================================================*/
 void SimplexTable::SimpleSimplexMethod()
 {
   while (!_isOptimalSolution())
-    _simplexMethod(_getResolutionElement());
+    if(_isExistSolution)
+      _simplexMethod(_getResolutionElement());
 }
 /*============================================================================*/
 void SimplexTable::Rebuild()

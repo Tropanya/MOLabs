@@ -16,6 +16,8 @@ struct ResolutionElement
 class SimplexTable
 {
 private:
+  mutable bool _isExistSolution;
+
   VarIndices _basis;
   VarIndices _notBasis;
 
@@ -48,7 +50,6 @@ public:
   void InvertRaw(
     unsigned int index);
 
-  inline unsigned int GetVariableCount() const { return _notBasis.size(); }
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
   inline const std::vector<mpq_class> GetSolutionVars() const
   { return _solutionVars; }
