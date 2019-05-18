@@ -242,16 +242,28 @@ bool SimplexTable::_isOptimalSolution() const
 /*============================================================================*/
 void SimplexTable::DualSimplexMethod()
 {
-  while (_hasNegativeAbsoluteTerms())
-    if(_isExistSolution)
-      _simplexMethod(_getResolutionElementDual());
+  ResolutionElement res;
+
+  while (_hasNegativeAbsoluteTerms() && _isExistSolution)
+  {
+    res = _getResolutionElementDual();
+
+    if (_isExistSolution)
+      _simplexMethod(res);
+  }
 }
 /*============================================================================*/
 void SimplexTable::SimpleSimplexMethod()
 {
-  while (!_isOptimalSolution())
-    if(_isExistSolution)
-      _simplexMethod(_getResolutionElement());
+  ResolutionElement res;
+
+  while (!_isOptimalSolution() && _isExistSolution)
+  {
+    res = _getResolutionElement();
+
+    if (_isExistSolution)
+      _simplexMethod(res);
+  }
 }
 /*============================================================================*/
 void SimplexTable::Rebuild()
