@@ -16,8 +16,6 @@ struct ResolutionElement
 class SimplexTable
 {
 private:
-  bool _isOptimal;
-
   VarIndices _basis;
   VarIndices _notBasis;
 
@@ -27,11 +25,12 @@ private:
 private:
   void _fillTable(
     const std::vector<SimplexTableElement*>& data);
-  ResolutionElement _getResolutionElementDualSimplexMethod() const;
-  void _dualSimplexMesthod();
+  ResolutionElement _getResolutionElementDual() const;
   ResolutionElement _getResolutionElement() const;
   void _swapBasic(
     const ResolutionElement& resolution);
+  void _simplexMethod(
+    const ResolutionElement& resolElem);
   bool _hasNegativeAbsoluteTerms() const;
   bool _isOptimalSolution() const;
 public:
@@ -40,8 +39,9 @@ public:
     unsigned int restrictionCount,
     const std::vector<SimplexTableElement*>& data);
 
-  void RebuildTable(
-    const ResolutionElement& resolution);
+  void DualSimplexMethod();
+  void SimpleSimplexMethod();
+  void Rebuild();
   void AddRaw(
     SimplexTableElement* element);
 
@@ -58,7 +58,6 @@ public:
   inline const std::vector<mpq_class> GetRaw(
     unsigned int index) const { return _data[index]; }
   inline const SimplexTableData& GetData() const { return _data; }
-  inline bool IsOptimal() const { return _isOptimal; }
 
   friend std::ostream& operator<<(
     std::ostream& stream,

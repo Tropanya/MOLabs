@@ -53,6 +53,8 @@ int main()
 
   SimplexTable table(2, 3, data);
   std::cout << table << std::endl;
+  table.Rebuild();
+  std::cout << table << std::endl;
 
   GomoryAlgorithm* firstGomory = new FirstGomoryAlgorithm(table);
   firstGomory->Compute();

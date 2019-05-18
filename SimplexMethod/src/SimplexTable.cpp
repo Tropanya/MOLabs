@@ -22,12 +22,6 @@ SimplexTable::SimplexTable(
     _basis.emplace_back(i + variableCount);
 
   _fillTable(data);
-
-  _dualSimplexMesthod();
-  while (!_isOptimalSolution())
-    RebuildTable(_getResolutionElement());
-
-  _isOptimal = true;
 }
 /*============================================================================*/
 void SimplexTable::_fillTable(
@@ -45,7 +39,7 @@ void SimplexTable::_fillTable(
     _data.back()[i] = mpq_class(-1) * data.back()->GetData()[i];
 }
 /*============================================================================*/
-ResolutionElement SimplexTable::_getResolutionElementDualSimplexMethod() const
+ResolutionElement SimplexTable::_getResolutionElementDual() const
 {
   ResolutionElement res;
   res.horIndex = 0;
@@ -105,12 +99,6 @@ ResolutionElement SimplexTable::_getResolutionElementDualSimplexMethod() const
   return res;
 }
 /*============================================================================*/
-void SimplexTable::_dualSimplexMesthod()
-{
-  while (_hasNegativeAbsoluteTerms())
-    RebuildTable(_getResolutionElementDualSimplexMethod());
-}
-/*============================================================================*/
 ResolutionElement SimplexTable::_getResolutionElement() const
 {
   ResolutionElement res;
@@ -168,33 +156,7 @@ void SimplexTable::_swapBasic(
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
-bool SimplexTable::_hasNegativeAbsoluteTerms() const
-{
-  for (unsigned int i = 0; i < _basis.size(); ++i)
-    if (_data[i].back() < mpq_class(0))
-      return true;
-
-  return false;
-}
-/*============================================================================*/
-bool SimplexTable::_isOptimalSolution() const
-{
-  bool res = true;
-
-  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
-  {
-    if (_data.back()[i] < mpq_class(0))
-    {
-      res = false;
-      break;
-    }
-  }
-
-  return res;
-}
-/*============================================================================*/
-void SimplexTable::RebuildTable(
-  const ResolutionElement& resolElem)
+void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
 {
   _swapBasic(resolElem);
   SimplexTableData oldData = _data;
@@ -224,6 +186,49 @@ void SimplexTable::RebuildTable(
     else
       _solutionVars[i] = mpq_class(0);
   }
+}
+/*============================================================================*/
+bool SimplexTable::_hasNegativeAbsoluteTerms() const
+{
+  for (unsigned int i = 0; i < _basis.size(); ++i)
+    if (_data[i].back() < mpq_class(0))
+      return true;
+
+  return false;
+}
+/*============================================================================*/
+bool SimplexTable::_isOptimalSolution() const
+{
+  bool res = true;
+
+  for (unsigned int i = 0; i < _data.back().size() - 1; ++i)
+  {
+    if (_data.back()[i] < mpq_class(0))
+    {
+      res = false;
+      break;
+    }
+  }
+
+  return res;
+}
+/*============================================================================*/
+void SimplexTable::DualSimplexMethod()
+{
+  while (_hasNegativeAbsoluteTerms())
+    _simplexMethod(_getResolutionElementDual());
+}
+/*============================================================================*/
+void SimplexTable::SimpleSimplexMethod()
+{
+  while (!_isOptimalSolution())
+    _simplexMethod(_getResolutionElement());
+}
+/*============================================================================*/
+void SimplexTable::Rebuild()
+{
+  DualSimplexMethod();
+  SimpleSimplexMethod();
 }
 /*============================================================================*/
 void SimplexTable::AddRaw(

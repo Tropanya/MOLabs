@@ -6,8 +6,7 @@
 /*============================================================================*/
 GomoryAlgorithm::GomoryAlgorithm(
   const SimplexTable& table):
-  _table(table),
-  _isExistSolution(true)
+  _table(table)
 {  }
 /*============================================================================*/
 unsigned int GomoryAlgorithm::_findResolutionIndex() const
@@ -43,53 +42,6 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
   return resIndex;
 }
 /*============================================================================*/
-ResolutionElement GomoryAlgorithm::_getResolutionElement() const
-{
-  ResolutionElement res;
-  res.horIndex = 0;
-  res.vertIndex = _table.GetBasic().size() - 1;
-  res.resolutionVal = mpq_class(-1);
-
-  mpq_class cmpVal(0);
-  bool isFirst = true;
-  bool find = false;
-
-  for (unsigned int i = 0; i < _table.GetData()[res.vertIndex].size() - 1; ++i)
-  {
-    if (_table.GetData()[res.vertIndex][i] != mpq_class(0))
-      cmpVal = _table.GetData().back()[i] / _table.GetData()[res.vertIndex][i];
-    else
-      continue;
-
-    if (isFirst)
-    {
-      res.horIndex = i;
-      res.resolutionVal = cmpVal;
-      isFirst = false;
-      find = true;
-    }
-    else
-    {
-      if (cmpVal < res.resolutionVal)
-      {
-        res.horIndex = i;
-        res.resolutionVal = cmpVal;
-        find = true;
-      }
-    }
-  }
-
-  if (find)
-    res.resolutionVal = _table.GetData()[res.vertIndex][res.horIndex];
-  else
-  {
-    std::cout << "Could not find resolution element.\n";
-    _isExistSolution = false;
-  }
-
-  return res;
-}
-/*============================================================================*/
 bool GomoryAlgorithm::_isOptimalSolution() const
 {
   bool res = true;
@@ -103,24 +55,15 @@ bool GomoryAlgorithm::_isOptimalSolution() const
 /*============================================================================*/
 void GomoryAlgorithm::Compute()
 {
-  ResolutionElement resElem;
-
   _table.InvertRaw(_table.GetData().size() - 1);
 
   while (!_isOptimalSolution())
   {
     unsigned int index = 0;
     index = _findResolutionIndex();
-
     _createAdditionalRestriction(index);
 
-    resElem = _getResolutionElement();
-    if (_isExistSolution)
-      _table.RebuildTable(resElem);
-    else
-      break;
+    _table.DualSimplexMethod();
   }
-
-  _isOptimal = _isOptimalSolution();
 }
 /*============================================================================*/
