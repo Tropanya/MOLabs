@@ -1,6 +1,7 @@
 #include <SimplexMethod/SimplexTable.h>
 #include <GomoryAlgorithm/FirstGomoryAlgorithm.h>
 #include <GomoryAlgorithm/SecondGomoryAlgorithm.h>
+#include <BranchAndBoundMethod/BranchAndBoundMethod.h>
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
 #include <iostream>
@@ -63,6 +64,11 @@ int main()
   GomoryAlgorithm* secondGomory = new SecondGomoryAlgorithm({ 0, 1 }, table);
   secondGomory->Compute();
   std::cout << secondGomory->GetTable() << std::endl;
+
+  SimplexTable table2(2, 3, data);
+  BranchAndBoundMethod branchAndBound(table2);
+  branchAndBound.Compute();
+  std::cout << branchAndBound.GetTable() << std::endl;
 
   return 0;
 }
