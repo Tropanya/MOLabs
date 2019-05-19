@@ -77,6 +77,12 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   return data;
 }
 /*============================================================================*/
+mpq_class GetTotalPart(
+  const mpq_class& impropFraction)
+{
+  return impropFraction.get_num() / impropFraction.get_den();
+}
+/*============================================================================*/
 mpq_class GetProperFraction(
   const mpq_class& impropFraction)
 {

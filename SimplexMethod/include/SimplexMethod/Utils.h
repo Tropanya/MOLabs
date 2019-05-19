@@ -33,6 +33,8 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
   std::vector<SimplexTableElement*>& data,
   const std::vector<Point>& points);
 /*============================================================================*/
+mpq_class GetTotalPart(
+  const mpq_class& impropFraction);
 mpq_class GetProperFraction(
   const mpq_class& impropFraction);
 /*============================================================================*/
