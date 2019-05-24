@@ -7,7 +7,7 @@ SecondGomoryAlgorithm::SecondGomoryAlgorithm(
   const SimplexTable& table):
   GomoryAlgorithm(table)
 {
-  for (unsigned int i = 0; i < intSolutionVars.size(); ++i)
+  for (std::size_t i = 0; i < intSolutionVars.size(); ++i)
     _intSolutionVars.emplace_back(intSolutionVars[i]);
 }
 /*============================================================================*/
@@ -20,7 +20,7 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
   std::vector<mpq_class> elementData;
   elementData.resize(raw.size());
 
-  for (unsigned int i = 0; i < elementData.size() - 1; ++i)
+  for (std::size_t i = 0; i < elementData.size() - 1; ++i)
   {
     auto it = std::find(_intSolutionVars.begin(), _intSolutionVars.end(),
                         _table.GetNotBasic()[i]);
@@ -47,9 +47,9 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
 
   elementData.back() = GetProperFraction(raw.back());
 
-  for (unsigned int i = 0; i < elementData.size(); ++i)
+  for (std::size_t i = 0; i < elementData.size(); ++i)
     elementData[i] = mpq_class(-1) * elementData[i];
 
-  _table.AddRaw(&(SimplexTableElement(elementData)));
+  _table.AddRow(&(SimplexTableElement(elementData)));
 }
 /*============================================================================*/

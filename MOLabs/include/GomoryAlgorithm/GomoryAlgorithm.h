@@ -13,7 +13,6 @@ private:
     unsigned int index) = 0;
 
   unsigned int _findResolutionIndex() const;
-  bool _isOptimalSolution() const;
 protected:
   GomoryAlgorithm(
     const SimplexTable& table);

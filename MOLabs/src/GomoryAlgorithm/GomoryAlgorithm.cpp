@@ -16,7 +16,7 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 
   mpq_class cmpVal(0);
   bool isFirst = true;
-  for (unsigned int i = 0; i < _table.GetRestrictionCount(); ++i)
+  for (std::size_t i = 0; i < _table.GetRestrictionCount(); ++i)
   {
     auto it = std::find(_intSolutionVars.begin(), _intSolutionVars.end(),
                         _table.GetBasic()[i]);
@@ -43,22 +43,11 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
   return resIndex;
 }
 /*============================================================================*/
-bool GomoryAlgorithm::_isOptimalSolution() const
-{
-  bool res = true;
-
-  for (unsigned int i = 0; i < _intSolutionVars.size(); ++i)
-    if (1 != _table.GetSolutionVars()[_intSolutionVars[i]].get_den())
-      res &= false;
-
-  return res;
-}
-/*============================================================================*/
 void GomoryAlgorithm::Compute()
 {
-  _table.InvertRaw(_table.GetData().size() - 1);
+  _table.InvertRow(_table.GetData().size() - 1);
 
-  while (!_isOptimalSolution())
+  while (!_table.isIntSolution())
   {
     _createAdditionalRestriction(_findResolutionIndex());
     _table.DualSimplexMethod();
