@@ -1,64 +1,133 @@
 #include "BranchAndBoundMethod/BranchAndBoundMethod.h"
 /*============================================================================*/
 #include <SimplexMethod/Utils.h>
-#include <iostream>
 /*============================================================================*/
 BranchAndBoundMethod::BranchAndBoundMethod(
   const SimplexTable& table):
   _table(table)
 {
-  for (unsigned int i = 0; i < _table.GetSolutionVars().size(); ++i)
+  for (std::size_t i = 0; i < _table.GetSolutionVars().size(); ++i)
     _intSolutionVars.emplace_back(i);
 }
 /*============================================================================*/
-bool BranchAndBoundMethod::_isOptimalSolution() const
+unsigned int BranchAndBoundMethod::_findResolutionIndex(
+  const SimplexTable& table) const
 {
-  bool res = true;
+  for (std::size_t i = 0; i < _intSolutionVars.size(); ++i)
+  {
+    auto it = std::find(table.GetBasic().begin(), table.GetBasic().end(),
+                        _intSolutionVars[i]);
 
-  for (unsigned int i = 0; i < _intSolutionVars.size(); ++i)
-    if (1 != _table.GetSolutionVars()[_intSolutionVars[i]].get_den())
-      res &= false;
+    if (it != table.GetBasic().end())
+    {
+      unsigned int tmpIndex = std::distance(table.GetBasic().begin(), it);
+
+      if (1 != table.GetData()[tmpIndex].back().get_den())
+        return tmpIndex;
+    }
+  }
+
+  return -1;
+}
+/*============================================================================*/
+void BranchAndBoundMethod::_addRow(
+  SimplexTable& destTable,
+  const SimplexTable& rootTable,
+  BranchType type,
+  unsigned int index)
+{
+  SimplexTableElementData data(rootTable.GetData().back().size());
+
+  switch (type)
+  {
+    case LEFT:
+    {
+      data[rootTable.GetBasic()[index]] = mpq_class(1);
+      data.back() = GetTotalPart(rootTable.GetData()[index].back());
+      destTable.AddRow(&(SimplexTableElement(data)));
+    }
+    break;
+
+    case RIGHT:
+    {
+      data[rootTable.GetBasic()[index]] = mpq_class(-1);
+      data.back() = mpq_class(-1) *
+        (GetTotalPart(rootTable.GetData()[index].back()) + mpq_class(1));
+      destTable.AddRow(&(SimplexTableElement(data)));
+    }
+    break;
+  }
+}
+/*============================================================================*/
+SimplexTable BranchAndBoundMethod::_computeBranches(
+  const SimplexTable& rootTable)
+{
+  SimplexTable res = rootTable;
+  res.Rebuild();
+
+  if (!res.isIntSolution())
+  {
+    unsigned int index = _findResolutionIndex(res);
+
+    SimplexTable left = rootTable;
+    _addRow(left, res, LEFT, index);
+    SimplexTable leftRoot = left;
+
+    SimplexTable right = rootTable;
+    _addRow(right, res, RIGHT, index);
+    SimplexTable rightRoot = right;
+
+    left.Rebuild();
+    right.Rebuild();
+
+    if (left.isExistSolution() && right.isExistSolution())
+    {
+      if (!left.isIntSolution() && !right.isIntSolution())
+      {
+        if (left.GetData().back().back() >= right.GetData().back().back())
+          res = _computeBranches(leftRoot);
+        else
+          res = _computeBranches(rightRoot);
+      }
+      else
+      {
+        if (left.isIntSolution())
+        {
+          if (left.GetData().back().back() >= right.GetData().back().back())
+            res = left;
+          else
+            res = _computeBranches(rightRoot);
+        }
+        else if (right.isIntSolution())
+        {
+          if (right.GetData().back().back() >= left.GetData().back().back())
+            res = right;
+          else
+            res = _computeBranches(leftRoot);
+        }
+      }
+    }
+    else if (!left.isExistSolution())
+    {
+      if (right.isIntSolution())
+        res = right;
+      else
+        res = _computeBranches(rightRoot);
+    }
+    else if (!right.isExistSolution())
+    {
+      if (left.isIntSolution())
+        res = left;
+      else
+        res = _computeBranches(leftRoot);
+    }
+  }
 
   return res;
 }
 /*============================================================================*/
 void BranchAndBoundMethod::Compute()
 {
-  SimplexTable tmpTable = _table;
-  _table.Rebuild();
-  SimplexTable left = tmpTable;
-  SimplexTable right = tmpTable;
-
-  left.AddRaw(&(SimplexTableElement(
-    { mpq_class(1), mpq_class(0), GetTotalPart(_table.GetData()[1].back()) })));
-  right.AddRaw(&(SimplexTableElement(
-    { mpq_class(-1), mpq_class(0),
-      mpq_class(-1) * (GetTotalPart(_table.GetData()[1].back()) + mpq_class(1)) })));
-
-  SimplexTable tmpLeft = left;
-  SimplexTable tmpRight = right;
-
-  std::cout << left << std::endl;
-  left.Rebuild();
-  std::cout << left << std::endl;
-  right.Rebuild();
-  std::cout << right << std::endl;
-
-  tmpRight = tmpLeft;
-
-  tmpLeft.AddRaw(&(SimplexTableElement(
-    { mpq_class(0), mpq_class(1), GetTotalPart(left.GetData()[2].back()) })));
-  tmpRight.AddRaw(&(SimplexTableElement(
-    { mpq_class(0), mpq_class(-1),
-      mpq_class(-1) * (GetTotalPart(left.GetData()[2].back()) + mpq_class(1)) })));
-
-  left = tmpLeft;
-  right = tmpRight;
-
-  std::cout << left << std::endl;
-  left.Rebuild();
-  std::cout << left << std::endl;
-  right.Rebuild();
-  std::cout << right << std::endl;
+  _table = _computeBranches(_table);
 }
 /*============================================================================*/

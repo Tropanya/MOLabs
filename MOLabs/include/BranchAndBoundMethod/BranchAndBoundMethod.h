@@ -3,13 +3,27 @@
 /*============================================================================*/
 #include <SimplexMethod/SimplexTable.h>
 /*============================================================================*/
+enum BranchType
+{
+  LEFT = 0,
+  RIGHT = 1
+};
+/*============================================================================*/
 class BranchAndBoundMethod
 {
 private:
   VarIndices _intSolutionVars;
   SimplexTable _table;
 private:
-  bool _isOptimalSolution() const;
+  unsigned int _findResolutionIndex(
+    const SimplexTable& table) const;
+  void _addRow(
+    SimplexTable& destTable,
+    const SimplexTable& rootTable,
+    BranchType type,
+    unsigned int index);
+  SimplexTable _computeBranches(
+    const SimplexTable& rootTable);
 public:
   BranchAndBoundMethod(
     const SimplexTable& table);
