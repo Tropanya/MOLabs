@@ -1,17 +1,17 @@
-#include "SimplexMethod/ObjectiveElement.h"
+#include "SimplexMethod/TargetRow.h"
 /*============================================================================*/
-ObjectiveElement::ObjectiveElement(
+TargetRow::TargetRow(
   const std::vector<mpq_class>& data,
-  ObjectiveElementType::ObjectiveElementType type):
-  SimplexTableElement(data),
+  TargetType::TargetType type):
+  SimplexTableRow(data),
   _type(type)
 {
   _toCanonical();
 }
 /*============================================================================*/
-void ObjectiveElement::_toCanonical()
+void TargetRow::_toCanonical()
 {
-  if (ObjectiveElementType::MIN == _type)
+  if (TargetType::MIN == _type)
     for (std::size_t i = 0; i < _data.size(); ++i)
       _data[i] = mpq_class(-1) * _data[i];
 

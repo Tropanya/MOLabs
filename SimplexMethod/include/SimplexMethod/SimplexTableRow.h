@@ -1,25 +1,25 @@
-#ifndef SIMPLEX_TABLE_ELEMENT_H
-#define SIMPLEX_TABLE_ELEMENT_H
+#ifndef SIMPLEX_TABLE_ROW_H
+#define SIMPLEX_TABLE_ROW_H
 /*============================================================================*/
 #include <mpir.h>
 #include <mpirxx.h>
 /*============================================================================*/
 #include <vector>
 /*============================================================================*/
-typedef std::vector<mpq_class> SimplexTableElementData;
+typedef std::vector<mpq_class> SimplexTableRowData;
 /*============================================================================*/
-class SimplexTableElement
+class SimplexTableRow
 {
 protected:
-  SimplexTableElementData _data;
+  SimplexTableRowData _data;
 private:
   virtual void _toCanonical() {  };
 public:
-  SimplexTableElement(
-    const SimplexTableElementData& data);
-  virtual ~SimplexTableElement();
+  SimplexTableRow(
+    const SimplexTableRowData& data);
+  virtual ~SimplexTableRow();
 
-  inline const SimplexTableElementData& GetData() const { return _data; }
+  inline const SimplexTableRowData& GetData() const { return _data; }
 };
 /*============================================================================*/
-#endif // SIMPLEX_TABLE_ELEMENT_H
+#endif // SIMPLEX_TABLE_ROW_H

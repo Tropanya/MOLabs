@@ -1,10 +1,10 @@
-#include "SimplexMethod/SimplexTableElement.h"
+#include "SimplexMethod/SimplexTableRow.h"
 /*============================================================================*/
-SimplexTableElement::SimplexTableElement(
-  const SimplexTableElementData& data):
+SimplexTableRow::SimplexTableRow(
+  const SimplexTableRowData& data):
   _data(data)
 {  }
 /*============================================================================*/
-SimplexTableElement::~SimplexTableElement()
+SimplexTableRow::~SimplexTableRow()
 {  }
 /*============================================================================*/

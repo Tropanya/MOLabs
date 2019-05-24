@@ -1,7 +1,7 @@
 #include "SimplexMethod/Utils.h"
 /*============================================================================*/
-#include <SimplexMethod/InequalityElement.h>
-#include <SimplexMethod/ObjectiveElement.h>
+#include <SimplexMethod/InequalityRow.h>
+#include <SimplexMethod/TargetRow.h>
 /*============================================================================*/
 mpq_class Dot(
   const Point& p1,
@@ -32,7 +32,7 @@ std::vector<mpq_class>& CreateElementDataFromPoints(
   return data;
 }
 /*============================================================================*/
-SimplexTableElement* CreateInequalityElement(
+SimplexTableRow* CreateInequalityElement(
   const Point& p1,
   const Point& p2)
 {
@@ -40,26 +40,26 @@ SimplexTableElement* CreateInequalityElement(
   data = CreateElementDataFromPoints(data, p1, p2);
 
   if (!IsBasis({ data[0], data[1] }))
-    return new InequalityElement(data, InequalitySignType::LE);
+    return new InequalityRow(data, InequalitySignType::LE);
   else
     return nullptr;
 }
 /*============================================================================*/
-SimplexTableElement* CreateObjectiveElement(
+SimplexTableRow* CreateObjectiveElement(
   const Point& p1,
   const Point& p2)
 {
   std::vector<mpq_class> data;
   data = CreateElementDataFromPoints(data, p1, p2);
 
-  return new ObjectiveElement(data, ObjectiveElementType::MAX);
+  return new TargetRow(data, TargetType::MAX);
 }
 /*============================================================================*/
-std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
-  std::vector<SimplexTableElement*>& data,
+std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
+  std::vector<SimplexTableRow*>& data,
   const std::vector<Point>& points)
 {
-  SimplexTableElement* result;
+  SimplexTableRow* result;
 
   for (std::size_t i = 1; i < points.size(); ++i)
   {

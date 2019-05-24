@@ -36,7 +36,7 @@ void BranchAndBoundMethod::_addRow(
   BranchType type,
   unsigned int index)
 {
-  SimplexTableElementData data(rootTable.GetData().back().size());
+  SimplexTableRowData data(rootTable.GetData().back().size());
 
   switch (type)
   {
@@ -44,7 +44,7 @@ void BranchAndBoundMethod::_addRow(
     {
       data[rootTable.GetBasic()[index]] = mpq_class(1);
       data.back() = GetTotalPart(rootTable.GetData()[index].back());
-      destTable.AddRow(&(SimplexTableElement(data)));
+      destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;
 
@@ -53,7 +53,7 @@ void BranchAndBoundMethod::_addRow(
       data[rootTable.GetBasic()[index]] = mpq_class(-1);
       data.back() = mpq_class(-1) *
         (GetTotalPart(rootTable.GetData()[index].back()) + mpq_class(1));
-      destTable.AddRow(&(SimplexTableElement(data)));
+      destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;
   }

@@ -50,6 +50,6 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
   for (std::size_t i = 0; i < elementData.size(); ++i)
     elementData[i] = mpq_class(-1) * elementData[i];
 
-  _table.AddRow(&(SimplexTableElement(elementData)));
+  _table.AddRow(&(SimplexTableRow(elementData)));
 }
 /*============================================================================*/

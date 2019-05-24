@@ -1,15 +1,15 @@
-#include "SimplexMethod/InequalityElement.h"
+#include "SimplexMethod/InequalityRow.h"
 /*============================================================================*/
-InequalityElement::InequalityElement(
+InequalityRow::InequalityRow(
   const std::vector<mpq_class>& data,
   InequalitySignType::InequalitySignType type):
-  SimplexTableElement(data),
+  SimplexTableRow(data),
   _type(type)
 {
   _toCanonical();
 }
 /*============================================================================*/
-void InequalityElement::_toCanonical()
+void InequalityRow::_toCanonical()
 {
   if (_data.back() < mpq_class(0))
   {

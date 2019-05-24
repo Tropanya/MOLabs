@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 /*============================================================================*/
-#include <SimplexMethod/SimplexTableElement.h>
+#include <SimplexMethod/SimplexTableRow.h>
 /*============================================================================*/
 #include <mpir.h>
 #include <mpirxx.h>
@@ -23,14 +23,14 @@ std::vector<mpq_class>& CreateElementDataFromPoints(
   std::vector<mpq_class>& data,
   const Point& p1,
   const Point& p2);
-SimplexTableElement* CreateInequalityElement(
+SimplexTableRow* CreateInequalityElement(
   const Point& p1,
   const Point& p2);
-SimplexTableElement* CreateObjectiveElement(
+SimplexTableRow* CreateObjectiveElement(
   const Point& p1,
   const Point& p2);
-std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
-  std::vector<SimplexTableElement*>& data,
+std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
+  std::vector<SimplexTableRow*>& data,
   const std::vector<Point>& points);
 /*============================================================================*/
 mpq_class GetTotalPart(

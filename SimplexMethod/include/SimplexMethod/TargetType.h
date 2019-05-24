@@ -1,13 +1,13 @@
-#ifndef OBJECTIVE_ELEMENT_TYPE_H
-#define OBJECTIVE_ELEMENT_TYPE_H
+#ifndef TARGET_TYPE_H
+#define TARGET_TYPE_H
 /*============================================================================*/
-namespace ObjectiveElementType
+namespace TargetType
 {
-  enum ObjectiveElementType
+  enum TargetType
   {
     MIN = 0,
     MAX = 1
   };
 }
 /*============================================================================*/
-#endif // OBJECTIVE_ELEMENT_TYPE_H
+#endif // TARGET_TYPE_H

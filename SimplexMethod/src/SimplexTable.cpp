@@ -7,7 +7,7 @@
 SimplexTable::SimplexTable(
   unsigned int variableCount,
   unsigned int restrictionCount,
-  const std::vector<SimplexTableElement*>& data):
+  const std::vector<SimplexTableRow*>& data):
   _isExistSolution(true)
 {
   assert((restrictionCount == data.size() - 1) &&
@@ -15,6 +15,7 @@ SimplexTable::SimplexTable(
   assert((variableCount == data[0]->GetData().size() - 1) &&
     "Variable count fail!");
 
+  _targetFuncVars.resize(variableCount);
   _solutionVars.resize(variableCount);
 
   for (std::size_t i = 0; i < variableCount; ++i)
@@ -27,7 +28,7 @@ SimplexTable::SimplexTable(
 }
 /*============================================================================*/
 void SimplexTable::_fillTable(
-  const std::vector<SimplexTableElement*>& data)
+  const std::vector<SimplexTableRow*>& data)
 {
   _data.resize(data.size());
   for (std::size_t i = 0; i < _data.size(); ++i)
@@ -39,6 +40,9 @@ void SimplexTable::_fillTable(
 
   for (std::size_t i = 0; i < data.back()->GetData().size(); ++i)
     _data.back()[i] = mpq_class(-1) * data.back()->GetData()[i];
+
+  for(std::size_t i = 0; i < _targetFuncVars.size(); ++i)
+    _targetFuncVars[i] = data.back()->GetData()[i];
 }
 /*============================================================================*/
 ResolutionElement SimplexTable::_getResolutionElementDual() const
@@ -180,6 +184,12 @@ void SimplexTable::_swapBasic(
 /*============================================================================*/
 void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
 {
+  std::cout << "Resolution element:\n";
+  std::cout << "  Row: " << resolElem.vertIndex + 1 << "\n";
+  std::cout << "  Col: " << resolElem.horIndex + 1 << "\n";
+  std::cout << "  Element: " << resolElem.resolutionVal << "\n";
+  std::cout << (*this) << "\n";
+
   _swapBasic(resolElem);
   SimplexTableData oldData = _data;
 
@@ -268,7 +278,7 @@ void SimplexTable::Rebuild()
 }
 /*============================================================================*/
 void SimplexTable::AddRow(
-  SimplexTableElement* element)
+  SimplexTableRow* element)
 {
   _basis.emplace_back(_basis.size() + _notBasis.size());
   _data.resize(_basis.size() + 1);
@@ -287,6 +297,16 @@ void SimplexTable::InvertRow(
     _data[index][i] = mpq_class(-1) * _data[index][i];
 }
 /*============================================================================*/
+mpq_class SimplexTable::ComputeTargetFunc() const
+{
+  mpq_class res = 0;
+
+  for (std::size_t i = 0; i < _targetFuncVars.size(); ++i)
+    res += _targetFuncVars[i] * _solutionVars[i];
+
+  return res;
+}
+/*============================================================================*/
 bool SimplexTable::isIntSolution() const
 {
   bool res = true;
@@ -302,6 +322,14 @@ std::ostream& operator<<(
   std::ostream& stream,
   const SimplexTable& table)
 {
+  stream << "SolutionVars : ";
+  for (std::size_t i = 0; i < table._solutionVars.size(); ++i)
+    stream << table._solutionVars[i] << " ";
+
+  stream << "\n";
+
+  stream << "Target function value: " << table.ComputeTargetFunc() << "\n";
+
   for (std::size_t i = 0; i < table._data.back().size() + 1; ++i)
     stream << " ===============";
 
