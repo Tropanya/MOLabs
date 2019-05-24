@@ -2,6 +2,7 @@
 /*============================================================================*/
 #include <cassert>
 #include <iostream>
+#include <iomanip>
 /*============================================================================*/
 SimplexTable::SimplexTable(
   unsigned int variableCount,
@@ -16,10 +17,10 @@ SimplexTable::SimplexTable(
 
   _solutionVars.resize(variableCount);
 
-  for (unsigned int i = 0; i < variableCount; ++i)
+  for (std::size_t i = 0; i < variableCount; ++i)
     _notBasis.emplace_back(i);
 
-  for (unsigned int i = 0; i < restrictionCount; ++i)
+  for (std::size_t i = 0; i < restrictionCount; ++i)
     _basis.emplace_back(i + variableCount);
 
   _fillTable(data);
@@ -49,7 +50,7 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
 
   mpq_class cmpVal(0);
   bool isFirst = true;
-  for (unsigned int i = 0; i < _basis.size(); ++i)
+  for (std::size_t i = 0; i < _basis.size(); ++i)
   {
     if (_data[i].back() < mpq_class(0))
     {
@@ -71,7 +72,7 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   }
 
   _isExistSolution = false;
-  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     if (_data[res.vertIndex][i] < mpq_class(0))
     {
@@ -81,13 +82,10 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   }
 
   if (!_isExistSolution)
-  {
-    std::cout << "Not exist solution\n";
     return { 0, 0, mpq_class(0) };
-  }
 
   isFirst = true;
-  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     if (_data[res.vertIndex][i] < mpq_class(0))
     {
@@ -122,7 +120,7 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   res.resolutionVal = mpq_class(0);
 
   mpq_class cmpVal(0);
-  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     if (_data.back()[i] <= cmpVal)
     {
@@ -132,7 +130,7 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   }
 
   _isExistSolution = false;
-  for (unsigned int i = 0; i < _basis.size(); ++i)
+  for (std::size_t i = 0; i < _basis.size(); ++i)
   {
     if (_data[i][res.horIndex] > mpq_class(0))
     {
@@ -142,13 +140,10 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   }
 
   if (!_isExistSolution)
-  {
-    std::cout << "Not exist solution\n";
     return { 0, 0, mpq_class(0) };
-  }
 
   bool isFirst = true;
-  for (unsigned int i = 0; i < _basis.size(); ++i)
+  for (std::size_t i = 0; i < _basis.size(); ++i)
   {
     if (_data[i][res.horIndex] > mpq_class(0))
     {
@@ -188,9 +183,9 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
   _swapBasic(resolElem);
   SimplexTableData oldData = _data;
 
-  for (unsigned int i = 0; i < _data.size(); ++i)
+  for (std::size_t i = 0; i < _data.size(); ++i)
   {
-    for (unsigned int j = 0; j < _data[i].size(); ++j)
+    for (std::size_t j = 0; j < _data[i].size(); ++j)
     {
       if (i == resolElem.vertIndex && j == resolElem.horIndex)
         _data[i][j] = mpq_class(1) / oldData[i][j];
@@ -205,7 +200,7 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
     }
   }
 
-  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     auto it = std::find(_basis.begin(), _basis.end(), i);
     if (it != _basis.end())
@@ -217,7 +212,7 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
 /*============================================================================*/
 bool SimplexTable::_hasNegativeAbsoluteTerms() const
 {
-  for (unsigned int i = 0; i < _basis.size(); ++i)
+  for (std::size_t i = 0; i < _basis.size(); ++i)
     if (_data[i].back() < mpq_class(0))
       return true;
 
@@ -228,7 +223,7 @@ bool SimplexTable::_isOptimalSolution() const
 {
   bool res = true;
 
-  for (unsigned int i = 0; i < _notBasis.size(); ++i)
+  for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     if (_data.back()[i] < mpq_class(0))
     {
@@ -272,7 +267,7 @@ void SimplexTable::Rebuild()
   SimpleSimplexMethod();
 }
 /*============================================================================*/
-void SimplexTable::AddRaw(
+void SimplexTable::AddRow(
   SimplexTableElement* element)
 {
   _basis.emplace_back(_basis.size() + _notBasis.size());
@@ -285,24 +280,72 @@ void SimplexTable::AddRaw(
   std::swap(_data.back(), _data[_data.size() - 2]);
 }
 /*============================================================================*/
-void SimplexTable::InvertRaw(
+void SimplexTable::InvertRow(
   unsigned int index)
 {
-  for (unsigned int i = 0; i < _data[index].size(); ++i)
+  for (std::size_t i = 0; i < _data[index].size(); ++i)
     _data[index][i] = mpq_class(-1) * _data[index][i];
+}
+/*============================================================================*/
+bool SimplexTable::isIntSolution() const
+{
+  bool res = true;
+
+  for (std::size_t i = 0; i < _solutionVars.size(); ++i)
+    if (1 != _solutionVars[i].get_den())
+      res &= false;
+
+  return res;
 }
 /*============================================================================*/
 std::ostream& operator<<(
   std::ostream& stream,
   const SimplexTable& table)
 {
-  for (unsigned int i = 0; i < table._data.size(); ++i)
-  {
-    for (unsigned int j = 0; j < table._data[i].size(); ++j)
-      stream << table._data[i][j] << " ";
+  for (std::size_t i = 0; i < table._data.back().size() + 1; ++i)
+    stream << " ===============";
 
-    stream << '\n';
+  stream << "\n|               |";
+
+  for (std::size_t i = 0; i < table._notBasis.size(); ++i)
+  {
+    std::string x = ("X");
+    x += std::to_string(table._notBasis[i] + 1);
+    stream << std::setw(15) << std::right << x << "|";
   }
+
+  stream << std::setw(17) << std::right << "B|\n";
+
+  for (std::size_t i = 0; i < table._data.back().size() + 1; ++i)
+    stream << " ===============";
+
+  stream << "\n|";
+
+  for (std::size_t i = 0; i < table._basis.size(); ++i)
+  {
+    stream << std::setw(14) << "X" << table._basis[i] + 1 << "|";
+
+    for (std::size_t j = 0; j < table._data[i].size(); ++j)
+      stream << std::setw(15) << table._data[i][j] << "|";
+
+    stream << "\n";
+
+    for (std::size_t i = 0; i < table._data.back().size() + 1; ++i)
+      stream << " ===============";
+
+    stream << "\n|";
+  }
+
+  stream << std::setw(16) << "F|";
+
+  for (std::size_t i = 0; i < table.GetData().back().size(); ++i)
+    stream << std::setw(15) << table._data.back()[i] << "|";
+
+  stream << "\n";
+  for (std::size_t i = 0; i < table._data.back().size() + 1; ++i)
+    stream << " ===============";
+
+  stream << "\n";
 
   return stream;
 }

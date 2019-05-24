@@ -44,11 +44,13 @@ public:
   void DualSimplexMethod();
   void SimpleSimplexMethod();
   void Rebuild();
-  void AddRaw(
+  void AddRow(
     SimplexTableElement* element);
 
-  void InvertRaw(
+  void InvertRow(
     unsigned int index);
+
+  bool isIntSolution() const;
 
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
   inline const std::vector<mpq_class> GetSolutionVars() const
@@ -59,6 +61,7 @@ public:
   inline const std::vector<mpq_class> GetRaw(
     unsigned int index) const { return _data[index]; }
   inline const SimplexTableData& GetData() const { return _data; }
+  inline bool isExistSolution() const { return _isExistSolution; }
 
   friend std::ostream& operator<<(
     std::ostream& stream,

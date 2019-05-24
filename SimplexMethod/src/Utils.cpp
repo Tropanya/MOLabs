@@ -14,7 +14,7 @@ bool IsBasis(
   const Point& point)
 {
   if ((Dot(point, { mpq_class(1), mpq_class(0) }) == 0) ||
-    (Dot(point, { mpq_class(0), mpq_class(1) }) == 0))
+      (Dot(point, { mpq_class(0), mpq_class(1) }) == 0))
     return true;
 
   return false;
@@ -61,7 +61,7 @@ std::vector<SimplexTableElement*>& CreateSimplexTableDataFromPoints(
 {
   SimplexTableElement* result;
 
-  for (unsigned int i = 1; i < points.size(); ++i)
+  for (std::size_t i = 1; i < points.size(); ++i)
   {
     if (points.size() - 2 == i)
       result = CreateInequalityElement(points[i - 1], points[0]);
