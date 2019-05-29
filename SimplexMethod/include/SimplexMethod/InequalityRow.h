@@ -13,7 +13,7 @@ private:
   void _toCanonical() override;
 public:
   InequalityRow(
-    const std::vector<mpq_class>& data,
+    const std::vector<Element>& data,
     InequalitySignType::InequalitySignType type);
 };
 /*============================================================================*/

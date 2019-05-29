@@ -10,7 +10,7 @@ struct ResolutionElement
 {
   unsigned int vertIndex;
   unsigned int horIndex;
-  mpq_class resolutionVal;
+  Element resolutionVal;
 };
 /*============================================================================*/
 class SimplexTable
@@ -21,8 +21,8 @@ private:
   VarIndices _basis;
   VarIndices _notBasis;
 
-  std::vector<mpq_class> _targetFuncVars;
-  std::vector<mpq_class> _solutionVars;
+  std::vector<Element> _targetFuncVars;
+  std::vector<Element> _solutionVars;
 
   SimplexTableData _data;
 private:
@@ -51,16 +51,16 @@ public:
   void InvertRow(
     unsigned int index);
 
-  mpq_class ComputeTargetFunc() const;
+  Element ComputeTargetFunc() const;
   bool isIntSolution() const;
 
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
-  inline const std::vector<mpq_class> GetSolutionVars() const
+  inline const std::vector<Element> GetSolutionVars() const
   { return _solutionVars; }
 
   inline const VarIndices& GetBasic() const { return _basis; }
   inline const VarIndices& GetNotBasic() const { return _notBasis; }
-  inline const std::vector<mpq_class> GetRaw(
+  inline const std::vector<Element> GetRaw(
     unsigned int index) const { return _data[index]; }
   inline const SimplexTableData& GetData() const { return _data; }
   inline bool isExistSolution() const { return _isExistSolution; }

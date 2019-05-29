@@ -39,7 +39,7 @@ void SimplexTable::_fillTable(
       _data[i][j] = data[i]->GetData()[j];
 
   for (std::size_t i = 0; i < data.back()->GetData().size(); ++i)
-    _data.back()[i] = mpq_class(-1) * data.back()->GetData()[i];
+    _data.back()[i] = Element(-1) * data.back()->GetData()[i];
 
   for(std::size_t i = 0; i < _targetFuncVars.size(); ++i)
     _targetFuncVars[i] = data.back()->GetData()[i];
@@ -50,13 +50,13 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   ResolutionElement res;
   res.horIndex = 0;
   res.vertIndex = 0;
-  res.resolutionVal = mpq_class(0);
+  res.resolutionVal = Element(0);
 
-  mpq_class cmpVal(0);
+  Element cmpVal(0);
   bool isFirst = true;
   for (std::size_t i = 0; i < _basis.size(); ++i)
   {
-    if (_data[i].back() < mpq_class(0))
+    if (_data[i].back() < Element(0))
     {
       if (isFirst)
       {
@@ -78,7 +78,7 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   _isExistSolution = false;
   for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
-    if (_data[res.vertIndex][i] < mpq_class(0))
+    if (_data[res.vertIndex][i] < Element(0))
     {
       _isExistSolution = true;
       break;
@@ -86,12 +86,12 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   }
 
   if (!_isExistSolution)
-    return { 0, 0, mpq_class(0) };
+    return { 0, 0, Element(0) };
 
   isFirst = true;
   for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
-    if (_data[res.vertIndex][i] < mpq_class(0))
+    if (_data[res.vertIndex][i] < Element(0))
     {
       cmpVal = abs(_data.back()[i] / _data[res.vertIndex][i]);
 
@@ -121,9 +121,9 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   ResolutionElement res;
   res.horIndex = 0;
   res.vertIndex = 0;
-  res.resolutionVal = mpq_class(0);
+  res.resolutionVal = Element(0);
 
-  mpq_class cmpVal(0);
+  Element cmpVal(0);
   for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
     if (_data.back()[i] <= cmpVal)
@@ -136,7 +136,7 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   _isExistSolution = false;
   for (std::size_t i = 0; i < _basis.size(); ++i)
   {
-    if (_data[i][res.horIndex] > mpq_class(0))
+    if (_data[i][res.horIndex] > Element(0))
     {
       _isExistSolution = true;
       break;
@@ -144,12 +144,12 @@ ResolutionElement SimplexTable::_getResolutionElement() const
   }
 
   if (!_isExistSolution)
-    return { 0, 0, mpq_class(0) };
+    return { 0, 0, Element(0) };
 
   bool isFirst = true;
   for (std::size_t i = 0; i < _basis.size(); ++i)
   {
-    if (_data[i][res.horIndex] > mpq_class(0))
+    if (_data[i][res.horIndex] > Element(0))
     {
       cmpVal = _data[i].back() / _data[i][res.horIndex];
 
@@ -198,11 +198,11 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
     for (std::size_t j = 0; j < _data[i].size(); ++j)
     {
       if (i == resolElem.vertIndex && j == resolElem.horIndex)
-        _data[i][j] = mpq_class(1) / oldData[i][j];
+        _data[i][j] = Element(1) / oldData[i][j];
       else if (i == resolElem.vertIndex)
         _data[i][j] = oldData[i][j] / resolElem.resolutionVal;
       else if (j == resolElem.horIndex)
-        _data[i][j] = mpq_class(-1) * (oldData[i][j] / resolElem.resolutionVal);
+        _data[i][j] = Element(-1) * (oldData[i][j] / resolElem.resolutionVal);
       else
         _data[i][j] = (resolElem.resolutionVal * oldData[i][j] -
           oldData[resolElem.vertIndex][j] * oldData[i][resolElem.horIndex]) /
@@ -216,14 +216,14 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
     if (it != _basis.end())
       _solutionVars[i] = _data[std::distance(_basis.begin(), it)].back();
     else
-      _solutionVars[i] = mpq_class(0);
+      _solutionVars[i] = Element(0);
   }
 }
 /*============================================================================*/
 bool SimplexTable::_hasNegativeAbsoluteTerms() const
 {
   for (std::size_t i = 0; i < _basis.size(); ++i)
-    if (_data[i].back() < mpq_class(0))
+    if (_data[i].back() < Element(0))
       return true;
 
   return false;
@@ -235,7 +235,7 @@ bool SimplexTable::_isOptimalSolution() const
 
   for (std::size_t i = 0; i < _notBasis.size(); ++i)
   {
-    if (_data.back()[i] < mpq_class(0))
+    if (_data.back()[i] < Element(0))
     {
       res = false;
       break;
@@ -294,12 +294,12 @@ void SimplexTable::InvertRow(
   unsigned int index)
 {
   for (std::size_t i = 0; i < _data[index].size(); ++i)
-    _data[index][i] = mpq_class(-1) * _data[index][i];
+    _data[index][i] = Element(-1) * _data[index][i];
 }
 /*============================================================================*/
-mpq_class SimplexTable::ComputeTargetFunc() const
+Element SimplexTable::ComputeTargetFunc() const
 {
-  mpq_class res = 0;
+  Element res = 0;
 
   for (std::size_t i = 0; i < _targetFuncVars.size(); ++i)
     res += _targetFuncVars[i] * _solutionVars[i];

@@ -14,10 +14,10 @@ SecondGomoryAlgorithm::SecondGomoryAlgorithm(
 void SecondGomoryAlgorithm::_createAdditionalRestriction(
   unsigned int index)
 {
-  const std::vector<mpq_class>& raw = _table.GetRaw(index);
-  mpq_class B = GetProperFraction(raw.back());
+  const std::vector<Element>& raw = _table.GetRaw(index);
+  Element B = GetProperFraction(raw.back());
 
-  std::vector<mpq_class> elementData;
+  std::vector<Element> elementData;
   elementData.resize(raw.size());
 
   for (std::size_t i = 0; i < elementData.size() - 1; ++i)
@@ -31,8 +31,7 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
         elementData[i] = GetProperFraction(raw[i]);
       else
         elementData[i] =
-          (B / (mpq_class(1) - B)) *
-            (mpq_class(1) - GetProperFraction(raw[i]));
+          (B / (Element(1) - B)) * (Element(1) - GetProperFraction(raw[i]));
     }
     else
     {
@@ -40,15 +39,14 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
         elementData[i] = raw[i];
       else
         elementData[i] =
-          (B / (mpq_class(1) - B)) *
-            (mpq_class(-1) * GetProperFraction(raw[i]));
+          (B / (Element(1) - B)) * (Element(-1) * GetProperFraction(raw[i]));
     }
   }
 
   elementData.back() = GetProperFraction(raw.back());
 
   for (std::size_t i = 0; i < elementData.size(); ++i)
-    elementData[i] = mpq_class(-1) * elementData[i];
+    elementData[i] = Element(-1) * elementData[i];
 
   _table.AddRow(&(SimplexTableRow(elementData)));
 }

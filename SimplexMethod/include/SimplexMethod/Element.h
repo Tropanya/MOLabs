@@ -34,6 +34,9 @@ public:
   friend Element operator-(const mpq_class& lft, const Element& rht);
   friend Element operator*(const mpq_class& lft, const Element& rht);
 
+  friend bool operator==(const Element& lft, const Element& rht);
+  friend bool operator!=(const Element& lft, const Element& rht);
+
   friend std::ostream& operator<<(
     std::ostream& stream,
     const Element& elemnt);

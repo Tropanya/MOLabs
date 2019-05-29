@@ -6,7 +6,8 @@
 /*============================================================================*/
 #include <vector>
 /*============================================================================*/
-typedef std::vector<mpq_class> SimplexTableRowData;
+typedef mpq_class Element;
+typedef std::vector<Element> SimplexTableRowData;
 /*============================================================================*/
 class SimplexTableRow
 {

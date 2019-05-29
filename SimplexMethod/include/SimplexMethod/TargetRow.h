@@ -13,7 +13,7 @@ private:
   void _toCanonical() override;
 public:
   TargetRow(
-    const std::vector<mpq_class>& data,
+    const std::vector<Element>& data,
     TargetType::TargetType type);
 };
 /*============================================================================*/

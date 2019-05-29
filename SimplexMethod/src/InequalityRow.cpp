@@ -1,7 +1,7 @@
 #include "SimplexMethod/InequalityRow.h"
 /*============================================================================*/
 InequalityRow::InequalityRow(
-  const std::vector<mpq_class>& data,
+  const std::vector<Element>& data,
   InequalitySignType::InequalitySignType type):
   SimplexTableRow(data),
   _type(type)
@@ -11,10 +11,10 @@ InequalityRow::InequalityRow(
 /*============================================================================*/
 void InequalityRow::_toCanonical()
 {
-  if (_data.back() < mpq_class(0))
+  if (_data.back() < Element(0))
   {
     for (std::size_t i = 0; i < _data.size(); ++i)
-      _data[i] = mpq_class(-1) * _data[i];
+      _data[i] = Element(-1) * _data[i];
 
     if (InequalitySignType::GE == _type)
       _type = InequalitySignType::LE;
@@ -24,6 +24,6 @@ void InequalityRow::_toCanonical()
 
   if(InequalitySignType::GE == _type)
     for (std::size_t i = 0; i < _data.size(); ++i)
-      _data[i] = mpq_class(-1) * _data[i];
+      _data[i] = Element(-1) * _data[i];
 }
 /*============================================================================*/

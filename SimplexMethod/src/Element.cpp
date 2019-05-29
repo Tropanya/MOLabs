@@ -122,6 +122,16 @@ Element operator*(const mpq_class& lft, const Element& rht)
     lft * rht._coefficient);
 }
 /*============================================================================*/
+bool operator==(const Element& lft, const Element& rht)
+{
+  return (lft._free == rht._free) && (lft._coefficient == rht._coefficient);
+}
+/*============================================================================*/
+bool operator!=(const Element& lft, const Element& rht)
+{
+  return !(lft == rht);
+}
+/*============================================================================*/
 std::ostream& operator<<(
   std::ostream& stream,
   const Element& elemnt)

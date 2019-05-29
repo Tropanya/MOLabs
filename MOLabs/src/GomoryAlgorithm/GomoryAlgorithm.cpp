@@ -14,7 +14,7 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 {
   unsigned int resIndex = 0;
 
-  mpq_class cmpVal(0);
+  Element cmpVal(0);
   bool isFirst = true;
   for (std::size_t i = 0; i < _table.GetRestrictionCount(); ++i)
   {

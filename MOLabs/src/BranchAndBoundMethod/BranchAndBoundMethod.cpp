@@ -42,7 +42,7 @@ void BranchAndBoundMethod::_addRow(
   {
     case LEFT:
     {
-      data[rootTable.GetBasic()[index]] = mpq_class(1);
+      data[rootTable.GetBasic()[index]] = Element(1);
       data.back() = GetTotalPart(rootTable.GetData()[index].back());
       destTable.AddRow(&(SimplexTableRow(data)));
     }
@@ -50,9 +50,9 @@ void BranchAndBoundMethod::_addRow(
 
     case RIGHT:
     {
-      data[rootTable.GetBasic()[index]] = mpq_class(-1);
-      data.back() = mpq_class(-1) *
-        (GetTotalPart(rootTable.GetData()[index].back()) + mpq_class(1));
+      data[rootTable.GetBasic()[index]] = Element(-1);
+      data.back() = Element(-1) *
+        (GetTotalPart(rootTable.GetData()[index].back()) + Element(1));
       destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;

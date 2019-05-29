@@ -13,13 +13,13 @@ FirstGomoryAlgorithm::FirstGomoryAlgorithm(
 void FirstGomoryAlgorithm::_createAdditionalRestriction(
   unsigned int index)
 {
-  const std::vector<mpq_class>& raw = _table.GetRaw(index);
+  const std::vector<Element>& raw = _table.GetRaw(index);
 
-  std::vector<mpq_class> elementData;
+  std::vector<Element> elementData;
   elementData.resize(raw.size());
 
   for (std::size_t i = 0; i < elementData.size(); ++i)
-    elementData[i] = mpq_class(-1) * GetProperFraction(raw[i]);
+    elementData[i] = Element(-1) * GetProperFraction(raw[i]);
 
   _table.AddRow(&(SimplexTableRow(elementData)));
 }
