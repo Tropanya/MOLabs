@@ -22,7 +22,7 @@ unsigned int BranchAndBoundMethod::_findResolutionIndex(
     {
       unsigned int tmpIndex = std::distance(table.GetBasic().begin(), it);
 
-      if (1 != table.GetData()[tmpIndex].back().get_den())
+      if (1 != table.GetData()[tmpIndex].back().GetFree().get_den())
         return tmpIndex;
     }
   }
@@ -43,7 +43,8 @@ void BranchAndBoundMethod::_addRow(
     case LEFT:
     {
       data[rootTable.GetBasic()[index]] = Element(1);
-      data.back() = GetTotalPart(rootTable.GetData()[index].back());
+      data.back() = Element(
+        GetTotalPart(rootTable.GetData()[index].back().GetFree()));
       destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;
@@ -51,8 +52,9 @@ void BranchAndBoundMethod::_addRow(
     case RIGHT:
     {
       data[rootTable.GetBasic()[index]] = Element(-1);
-      data.back() = Element(-1) *
-        (GetTotalPart(rootTable.GetData()[index].back()) + Element(1));
+      data.back() = Fraction(-1) *
+        (GetTotalPart(
+          rootTable.GetData()[index].back().GetFree()) + Element(1));
       destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;

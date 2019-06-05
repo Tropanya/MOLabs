@@ -10,7 +10,7 @@ Element Dot(
   return (p1.x * p2.x) + (p1.y * p2.y);
 }
 /*============================================================================*/
-bool IsBasis(
+/*bool IsBasis(
   const Point& point)
 {
   if ((Dot(point, { Element(1), Element(0) }) == 0) ||
@@ -18,7 +18,7 @@ bool IsBasis(
     return true;
 
   return false;
-}
+}*/
 /*============================================================================*/
 std::vector<Element>& CreateElementDataFromPoints(
   std::vector<Element>& data,
@@ -39,10 +39,12 @@ SimplexTableRow* CreateInequalityElement(
   std::vector<Element> data;
   data = CreateElementDataFromPoints(data, p1, p2);
 
-  if (!IsBasis({ data[0], data[1] }))
-    return new InequalityRow(data, InequalitySignType::LE);
-  else
-    return nullptr;
+  return new InequalityRow(data, InequalitySignType::LE);
+
+  //if (!IsBasis({ data[0], data[1] }))
+  //  return new InequalityRow(data, InequalitySignType::LE);
+  //else
+  //  return nullptr;
 }
 /*============================================================================*/
 SimplexTableRow* CreateObjectiveElement(
@@ -77,24 +79,26 @@ std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
   return data;
 }
 /*============================================================================*/
-Element GetTotalPart(
-  const Element& impropFraction)
+Fraction GetTotalPart(
+  const Fraction& impropFraction)
 {
-  return impropFraction.get_num() / impropFraction.get_den();
+  return impropFraction.get_num() /
+           impropFraction.get_den();
 }
 /*============================================================================*/
-Element GetProperFraction(
-  const Element& impropFraction)
+Fraction GetProperFraction(
+  const Fraction& impropFraction)
 {
-  Element tmpImpropFraction =
-    impropFraction - (impropFraction.get_num() / impropFraction.get_den());
+  Fraction tmpImpropFraction =
+    impropFraction - (impropFraction.get_num() /
+                        impropFraction.get_den());
 
-  if (tmpImpropFraction < Element(0))
+  if (tmpImpropFraction < Fraction(0))
   {
     if (1 == tmpImpropFraction.get_den())
-      return Element(0);
+      return Fraction(0);
     else
-      return impropFraction - (tmpImpropFraction - Element(1));
+      return impropFraction - (tmpImpropFraction - Fraction(1));
   }
   else
     return tmpImpropFraction;

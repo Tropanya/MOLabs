@@ -14,7 +14,7 @@ void InequalityRow::_toCanonical()
   if (_data.back() < Element(0))
   {
     for (std::size_t i = 0; i < _data.size(); ++i)
-      _data[i] = Element(-1) * _data[i];
+      _data[i] = Fraction(-1) * _data[i];
 
     if (InequalitySignType::GE == _type)
       _type = InequalitySignType::LE;
@@ -24,6 +24,6 @@ void InequalityRow::_toCanonical()
 
   if(InequalitySignType::GE == _type)
     for (std::size_t i = 0; i < _data.size(); ++i)
-      _data[i] = Element(-1) * _data[i];
+      _data[i] = Fraction(-1) * _data[i];
 }
 /*============================================================================*/

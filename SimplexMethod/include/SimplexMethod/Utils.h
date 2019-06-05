@@ -11,8 +11,8 @@ struct Point
 Element Dot(
   const Point& p1,
   const Point& p2);
-bool IsBasis(
-  const Point& point);
+/*bool IsBasis(
+  const Point& point);*/
 /*============================================================================*/
 std::vector<Element>& CreateElementDataFromPoints(
   std::vector<Element>& data,
@@ -28,9 +28,9 @@ std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
   std::vector<SimplexTableRow*>& data,
   const std::vector<Point>& points);
 /*============================================================================*/
-Element GetTotalPart(
-  const Element& impropFraction);
-Element GetProperFraction(
-  const Element& impropFraction);
+Fraction GetTotalPart(
+  const Fraction& impropFraction);
+Fraction GetProperFraction(
+  const Fraction& impropFraction);
 /*============================================================================*/
 #endif // UTILS_H

@@ -12,11 +12,11 @@ int main()
   std::vector<SimplexTableRow*> data;
   std::vector<Point> points =
   {
-    { Element(0), Element(83, 10) },
-    { Element(113, 10), Element(172, 10) },
-    { Element(83, 10), Element(0) },
-    { Element(1), Element(5) },
-    { Element(3), Element(1) }
+    { Element({0}), Element({83, 10}) },
+    { Element({113, 10}), Element({172, 10}) },
+    { Element({83, 10}), Element({0}) },
+    { Element({1}), Element({5}) },
+    { Element({3}), Element({1}) }
   };
 
   //std::vector<Point> points =

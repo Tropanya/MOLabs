@@ -14,7 +14,6 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 {
   unsigned int resIndex = 0;
 
-  Element cmpVal(0);
   bool isFirst = true;
   for (std::size_t i = 0; i < _table.GetRestrictionCount(); ++i)
   {
@@ -23,7 +22,7 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 
     if (it != _intSolutionVars.end())
     {
-      if (1 != _table.GetData()[i].back().get_den())
+      if (1 != _table.GetData()[i].back().GetFree().get_den())
       {
         if (isFirst)
         {
@@ -32,8 +31,8 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
         }
         else
         {
-          if (GetProperFraction(_table.GetData()[i].back()) >
-              GetProperFraction(_table.GetData()[resIndex].back()))
+          if (GetProperFraction(_table.GetData()[i].back().GetFree()) >
+              GetProperFraction(_table.GetData()[resIndex].back().GetFree()))
             resIndex = i;
         }
       }

@@ -1,12 +1,10 @@
 #ifndef SIMPLEX_TABLE_ROW_H
 #define SIMPLEX_TABLE_ROW_H
 /*============================================================================*/
-#include <mpir.h>
-#include <mpirxx.h>
+#include <SimplexMethod/Element.h>
 /*============================================================================*/
 #include <vector>
 /*============================================================================*/
-typedef mpq_class Element;
 typedef std::vector<Element> SimplexTableRowData;
 /*============================================================================*/
 class SimplexTableRow

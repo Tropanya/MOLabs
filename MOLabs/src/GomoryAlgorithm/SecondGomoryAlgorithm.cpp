@@ -15,7 +15,7 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
   unsigned int index)
 {
   const std::vector<Element>& raw = _table.GetRaw(index);
-  Element B = GetProperFraction(raw.back());
+  Fraction B = GetProperFraction(raw.back().GetFree());
 
   std::vector<Element> elementData;
   elementData.resize(raw.size());
@@ -27,26 +27,26 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
 
     if (it != _intSolutionVars.end())
     {
-      if (GetProperFraction(raw[i]) <= B)
-        elementData[i] = GetProperFraction(raw[i]);
+      if (GetProperFraction(raw[i].GetFree()) <= B)
+        elementData[i] = Element(GetProperFraction(raw[i].GetFree()));
       else
-        elementData[i] =
-          (B / (Element(1) - B)) * (Element(1) - GetProperFraction(raw[i]));
+        elementData[i] = Element((B / (Fraction(1) - B)) *
+                         (Fraction(1) - GetProperFraction(raw[i].GetFree())));
     }
     else
     {
-      if (raw[i] >= 0)
+      if (raw[i].GetFree() >= 0)
         elementData[i] = raw[i];
       else
-        elementData[i] =
-          (B / (Element(1) - B)) * (Element(-1) * GetProperFraction(raw[i]));
+        elementData[i] = Element((B / (Fraction(1) - B)) *
+                         (Fraction(-1) * GetProperFraction(raw[i].GetFree())));
     }
   }
 
-  elementData.back() = GetProperFraction(raw.back());
+  elementData.back() = Element(GetProperFraction(raw.back().GetFree()));
 
   for (std::size_t i = 0; i < elementData.size(); ++i)
-    elementData[i] = Element(-1) * elementData[i];
+    elementData[i] = Fraction(-1) * elementData[i];
 
   _table.AddRow(&(SimplexTableRow(elementData)));
 }

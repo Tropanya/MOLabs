@@ -19,7 +19,10 @@ void FirstGomoryAlgorithm::_createAdditionalRestriction(
   elementData.resize(raw.size());
 
   for (std::size_t i = 0; i < elementData.size(); ++i)
-    elementData[i] = Element(-1) * GetProperFraction(raw[i]);
+  {
+    elementData[i] =
+      Element(Fraction(-1) * GetProperFraction(raw[i].GetFree()));
+  }
 
   _table.AddRow(&(SimplexTableRow(elementData)));
 }
