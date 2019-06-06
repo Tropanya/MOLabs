@@ -8,19 +8,18 @@ Element::Element(
   const Fraction& coefficient):
   _free(free),
   _coefficient(coefficient),
-  _hasParameter(false),
-  _isCompute(true)
+  _isCompute(false)
 {
-  if (Fraction(0) != _coefficient)
+  if (Fraction(0) == _coefficient)
   {
-    _hasParameter = true;
-    _isCompute = false;
+    _isCompute = true;
+    _computedValue = _free;
   }
 }
 /*============================================================================*/
-Fraction Element::Compute(const Fraction& parameter) const
+void Element::Compute(const Fraction& parameter)
 {
-  return _free + (_coefficient * parameter);
+  _computedValue = _free + (_coefficient * parameter);
 }
 /*============================================================================*/
 Element& Element::operator+=(const Element& other)
@@ -41,7 +40,7 @@ Element& Element::operator-=(const Element& other)
 /*============================================================================*/
 Element& Element::operator*=(const Element& other)
 {
-  if (!this->_isCompute || !other._isCompute)
+  if (!(this->_isCompute || other._isCompute))
     assert(false);
 
   this->_free *= other._free;
@@ -51,7 +50,7 @@ Element& Element::operator*=(const Element& other)
 /*============================================================================*/
 Element& Element::operator/=(const Element& other)
 {
-  if (!this->_isCompute || !other._isCompute)
+  if (!(this->_isCompute || other._isCompute))
     assert(false);
 
   assert(Fraction(0) != other._free);
@@ -116,7 +115,7 @@ Element operator-(const Element& lft, const Element& rht)
 /*============================================================================*/
 Element operator*(const Element& lft, const Element& rht)
 {
-  if (!lft._isCompute || !rht._isCompute)
+  if (!(lft._isCompute || rht._isCompute))
     assert(false);
 
   return Element(
@@ -125,7 +124,7 @@ Element operator*(const Element& lft, const Element& rht)
 /*============================================================================*/
 Element operator/(const Element& lft, const Element& rht)
 {
-  if (!lft._isCompute || !rht._isCompute)
+  if (!(lft._isCompute || rht._isCompute))
     assert(false);
 
   assert(Fraction(0) != rht._free);
@@ -198,18 +197,18 @@ Element operator/(const Fraction& lft, const Element& rht)
 /*============================================================================*/
 bool operator<(const Element& lft, const Element& rht)
 {
-  Fraction l = lft.Compute(0);
-  Fraction r = rht.Compute(0);
+  if (!(lft._isCompute || rht._isCompute))
+    assert(false);
 
-  return l < r;
+  return lft._computedValue < rht._computedValue;
 }
 /*============================================================================*/
 bool operator<=(const Element& lft, const Element& rht)
 {
-  Fraction l = lft.Compute(0);
-  Fraction r = rht.Compute(0);
+  if (!(lft._isCompute || rht._isCompute))
+    assert(false);
 
-  return l <= r;
+  return lft._computedValue <= rht._computedValue;
 }
 /*============================================================================*/
 bool operator>(const Element& lft, const Element& rht)
@@ -242,12 +241,12 @@ Element abs(const Element& other)
 /*============================================================================*/
 std::ostream& operator<<(
   std::ostream& stream,
-  const Element& elemnt)
+  const Element& element)
 {
-  if (Fraction(0) != elemnt._coefficient)
-    stream << "(" << elemnt._free << "+(" << elemnt._coefficient << "t))";
+  if (Fraction(0) != element._coefficient)
+    stream << "(" << element._free << "+(" << element._coefficient << "t))";
   else
-    stream << elemnt._free;
+    stream << element._free;
 
   return stream;
 }

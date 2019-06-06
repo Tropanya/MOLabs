@@ -12,14 +12,15 @@ private:
   Fraction _free;
   Fraction _coefficient;
 
-  bool _hasParameter;
+  Fraction _computedValue;
+
   bool _isCompute;
 public:
   explicit Element(
     const Fraction& free = 0,
     const Fraction& coefficient = 0);
 
-  Fraction Compute(const Fraction& parameter) const;
+  void Compute(const Fraction& parameter);
 
   Element& operator+=(const Element& other);
   Element& operator-=(const Element& other);
@@ -62,7 +63,7 @@ public:
 
   friend std::ostream& operator<<(
     std::ostream& stream,
-    const Element& elemnt);
+    const Element& element);
 };
 /*============================================================================*/
 #endif // ELEMENT_H
