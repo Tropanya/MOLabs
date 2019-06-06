@@ -46,7 +46,7 @@ void SecondGomoryAlgorithm::_createAdditionalRestriction(
   elementData.back() = Element(GetProperFraction(raw.back().GetFree()));
 
   for (std::size_t i = 0; i < elementData.size(); ++i)
-    elementData[i] = Fraction(-1) * elementData[i];
+    elementData[i] = Element(-1) * elementData[i];
 
   _table.AddRow(&(SimplexTableRow(elementData)));
 }

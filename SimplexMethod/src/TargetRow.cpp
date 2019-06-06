@@ -13,7 +13,7 @@ void TargetRow::_toCanonical()
 {
   if (TargetType::MIN == _type)
     for (std::size_t i = 0; i < _data.size(); ++i)
-      _data[i] = Fraction(-1) * _data[i];
+      _data[i] = Element(-1) * _data[i];
 
   _data.back() = Element(0);
 }

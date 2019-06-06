@@ -39,7 +39,7 @@ void SimplexTable::_fillTable(
       _data[i][j] = data[i]->GetData()[j];
 
   for (std::size_t i = 0; i < data.back()->GetData().size(); ++i)
-    _data.back()[i] = Fraction(-1) * data.back()->GetData()[i];
+    _data.back()[i] = Element(-1) * data.back()->GetData()[i];
 
   for(std::size_t i = 0; i < _targetFuncVars.size(); ++i)
     _targetFuncVars[i] = data.back()->GetData()[i];
@@ -198,11 +198,11 @@ void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
     for (std::size_t j = 0; j < _data[i].size(); ++j)
     {
       if (i == resolElem.vertIndex && j == resolElem.horIndex)
-        _data[i][j] = Fraction(1) / oldData[i][j];
+        _data[i][j] = Element(1) / oldData[i][j];
       else if (i == resolElem.vertIndex)
         _data[i][j] = oldData[i][j] / resolElem.resolutionVal;
       else if (j == resolElem.horIndex)
-        _data[i][j] = Fraction(-1) * (oldData[i][j] / resolElem.resolutionVal);
+        _data[i][j] = Element(-1) * (oldData[i][j] / resolElem.resolutionVal);
       else
         _data[i][j] = (resolElem.resolutionVal * oldData[i][j] -
           oldData[resolElem.vertIndex][j] * oldData[i][resolElem.horIndex]) /
@@ -294,7 +294,7 @@ void SimplexTable::InvertRow(
   unsigned int index)
 {
   for (std::size_t i = 0; i < _data[index].size(); ++i)
-    _data[index][i] = Fraction(-1) * _data[index][i];
+    _data[index][i] = Element(-1) * _data[index][i];
 }
 /*============================================================================*/
 Element SimplexTable::ComputeTargetFunc() const

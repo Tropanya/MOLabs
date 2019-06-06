@@ -52,9 +52,9 @@ void BranchAndBoundMethod::_addRow(
     case RIGHT:
     {
       data[rootTable.GetBasic()[index]] = Element(-1);
-      data.back() = Fraction(-1) *
-        (GetTotalPart(
-          rootTable.GetData()[index].back().GetFree()) + Element(1));
+      data.back() = Element(-1) * (Element(
+        GetTotalPart(
+          rootTable.GetData()[index].back().GetFree())) + Element(1));
       destTable.AddRow(&(SimplexTableRow(data)));
     }
     break;

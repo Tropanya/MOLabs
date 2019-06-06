@@ -27,27 +27,12 @@ public:
   Element& operator*=(const Element& other);
   Element& operator/=(const Element& other);
 
-  Element& operator+=(const Fraction& other);
-  Element& operator-=(const Fraction& other);
-  Element& operator*=(const Fraction& other);
-  Element& operator/=(const Fraction& other);
-
   friend Element operator-(const Element& other);
 
   friend Element operator+(const Element& lft, const Element& rht);
   friend Element operator-(const Element& lft, const Element& rht);
   friend Element operator*(const Element& lft, const Element& rht);
   friend Element operator/(const Element& lft, const Element& rht);
-
-  friend Element operator+(const Element& lft, const Fraction& rht);
-  friend Element operator-(const Element& lft, const Fraction& rht);
-  friend Element operator*(const Element& lft, const Fraction& rht);
-  friend Element operator/(const Element& lft, const Fraction& rht);
-
-  friend Element operator+(const Fraction& lft, const Element& rht);
-  friend Element operator-(const Fraction& lft, const Element& rht);
-  friend Element operator*(const Fraction& lft, const Element& rht);
-  friend Element operator/(const Fraction& lft, const Element& rht);
 
   friend bool operator<(const Element& lft, const Element& rht);
   friend bool operator<=(const Element& lft, const Element& rht);
