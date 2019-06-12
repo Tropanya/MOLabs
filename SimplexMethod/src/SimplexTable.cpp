@@ -4,6 +4,18 @@
 #include <iostream>
 #include <iomanip>
 /*============================================================================*/
+std::ostream& operator<<(
+  std::ostream& stream,
+  const ResolutionElement& element)
+{
+  stream << "Resolution element:\n";
+  stream << "  Row: " << element.vertIndex + 1 << "\n";
+  stream << "  Col: " << element.horIndex + 1 << "\n";
+  stream << "  Element: " << element.resolutionVal;
+
+  return stream;
+}
+/*============================================================================*/
 SimplexTable::SimplexTable(
   unsigned int variableCount,
   unsigned int restrictionCount,
@@ -93,7 +105,9 @@ ResolutionElement SimplexTable::_getResolutionElementDual() const
   {
     if (_data[res.vertIndex][i] < Element(0))
     {
-      cmpVal = abs(_data.back()[i] / _data[res.vertIndex][i]);
+      cmpVal = _data.back()[i] / _data[res.vertIndex][i];
+      cmpVal.Compute(_data.back()[i].GetParamValue());
+      cmpVal = abs(cmpVal);
 
       if (isFirst)
       {
@@ -182,13 +196,15 @@ void SimplexTable::_swapBasic(
   _notBasis[resolution.horIndex] = tmp;
 }
 /*============================================================================*/
-void SimplexTable::_simplexMethod(const ResolutionElement& resolElem)
+void SimplexTable::_simplexMethod(
+  const ResolutionElement& resolElem,
+  bool addIntermediateInfo)
 {
-  std::cout << "Resolution element:\n";
-  std::cout << "  Row: " << resolElem.vertIndex + 1 << "\n";
-  std::cout << "  Col: " << resolElem.horIndex + 1 << "\n";
-  std::cout << "  Element: " << resolElem.resolutionVal << "\n";
-  std::cout << (*this) << "\n";
+  if (addIntermediateInfo)
+  {
+    std::cout << resolElem << "\n";
+    std::cout << (*this) << "\n";
+  }
 
   _swapBasic(resolElem);
   SimplexTableData oldData = _data;
@@ -245,7 +261,8 @@ bool SimplexTable::_isOptimalSolution() const
   return res;
 }
 /*============================================================================*/
-void SimplexTable::DualSimplexMethod()
+void SimplexTable::DualSimplexMethod(
+  bool addIntermediateInfo)
 {
   ResolutionElement res;
 
@@ -254,11 +271,12 @@ void SimplexTable::DualSimplexMethod()
     res = _getResolutionElementDual();
 
     if (_isExistSolution)
-      _simplexMethod(res);
+      _simplexMethod(res, addIntermediateInfo);
   }
 }
 /*============================================================================*/
-void SimplexTable::SimpleSimplexMethod()
+void SimplexTable::SimpleSimplexMethod(
+  bool addIntermediateInfo)
 {
   ResolutionElement res;
 
@@ -267,14 +285,32 @@ void SimplexTable::SimpleSimplexMethod()
     res = _getResolutionElement();
 
     if (_isExistSolution)
-      _simplexMethod(res);
+      _simplexMethod(res, addIntermediateInfo);
   }
 }
 /*============================================================================*/
-void SimplexTable::Rebuild()
+void SimplexTable::Rebuild(
+  bool addIntermediateInfo)
 {
-  DualSimplexMethod();
-  SimpleSimplexMethod();
+  DualSimplexMethod(addIntermediateInfo);
+  SimpleSimplexMethod(addIntermediateInfo);
+}
+/*============================================================================*/
+void SimplexTable::Rebuild(
+  const Fraction& paramVal,
+  bool addIntermediateInfo)
+{
+  while (true)
+  {
+    for (std::size_t i = 0; i < _data.size(); ++i)
+      for (std::size_t j = 0; j < _data[i].size(); ++j)
+        _data[i][j].Compute(paramVal);
+
+    if (!_isOptimalSolution())
+      Rebuild(addIntermediateInfo);
+    else
+      break;
+  }
 }
 /*============================================================================*/
 void SimplexTable::AddRow(

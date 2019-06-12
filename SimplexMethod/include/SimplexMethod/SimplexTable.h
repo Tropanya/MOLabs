@@ -11,6 +11,10 @@ struct ResolutionElement
   unsigned int vertIndex;
   unsigned int horIndex;
   Element resolutionVal;
+
+  friend std::ostream& operator<<(
+    std::ostream& stream,
+    const ResolutionElement& element);
 };
 /*============================================================================*/
 class SimplexTable
@@ -33,7 +37,8 @@ private:
   void _swapBasic(
     const ResolutionElement& resolution);
   void _simplexMethod(
-    const ResolutionElement& resolElem);
+    const ResolutionElement& resolElem,
+    bool addIntermediateInfo);
   bool _hasNegativeAbsoluteTerms() const;
   bool _isOptimalSolution() const;
 public:
@@ -42,9 +47,15 @@ public:
     unsigned int restrictionCount,
     const std::vector<SimplexTableRow*>& data);
 
-  void DualSimplexMethod();
-  void SimpleSimplexMethod();
-  void Rebuild();
+  void DualSimplexMethod(
+    bool addIntermediateInfo);
+  void SimpleSimplexMethod(
+    bool addIntermediateInfo);
+  void Rebuild(
+    bool addIntermediateInfo);
+  void Rebuild(
+    const Fraction& paramVal,
+    bool addIntermediateInfo);
   void AddRow(
     SimplexTableRow* element);
 
