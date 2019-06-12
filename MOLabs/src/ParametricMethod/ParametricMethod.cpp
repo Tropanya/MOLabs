@@ -43,7 +43,7 @@ void ParametricMethod::Compute()
     Interval subInterval;
 
     bool isFirstNegative = true;
-    bool onlyNagative = true;
+    bool onlyNegative = true;
 
     bool isFirstPositive = true;
     bool onlyPositive = true;
@@ -60,7 +60,7 @@ void ParametricMethod::Compute()
         {
           subInterval.min = tmpMax;
           isFirstPositive = false;
-          onlyNagative &= false;
+          onlyNegative &= false;
         }
         else
         {
@@ -88,7 +88,7 @@ void ParametricMethod::Compute()
         continue;
     }
 
-    if (onlyNagative)
+    if (onlyNegative)
       subInterval.min = Range::NEG_INF;
 
     if (onlyPositive)

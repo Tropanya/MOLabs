@@ -28,7 +28,7 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
 
     if (it != _intSolutionVars.end())
     {
-      if (1 != _table.GetData()[i].back().GetFree().get_den())
+      if (0 != GetProperFraction(_table.GetData()[i].back().GetFree()))
       {
         if (isFirst)
         {

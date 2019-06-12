@@ -1,5 +1,7 @@
 #include "SimplexMethod/SimplexTable.h"
 /*============================================================================*/
+#include <SimplexMethod/Utils.h>
+/*============================================================================*/
 #include <cassert>
 #include <iostream>
 #include <iomanip>
@@ -348,7 +350,7 @@ bool SimplexTable::isIntSolution() const
   bool res = true;
 
   for (std::size_t i = 0; i < _solutionVars.size(); ++i)
-    if (1 != _solutionVars[i].GetFree().get_den())
+    if (0 != GetProperFraction(_solutionVars[i].GetFree()))
       res &= false;
 
   return res;

@@ -24,7 +24,7 @@ unsigned int BranchAndBoundMethod::_findResolutionIndex(
     {
       unsigned int tmpIndex = std::distance(table.GetBasic().begin(), it);
 
-      if (1 != table.GetData()[tmpIndex].back().GetFree().get_den())
+      if (0 != GetProperFraction(table.GetData()[tmpIndex].back().GetFree()))
         return tmpIndex;
     }
   }
