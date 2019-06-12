@@ -1,21 +1,27 @@
 #ifndef PARAMETRIC_METHOD_H
 #define PARAMETRIC_METHOD_H
 /*============================================================================*/
-#include <climits>
-/*============================================================================*/
 #include <SimplexMethod/SimplexTable.h>
 /*============================================================================*/
-enum Range:
-  long long
+#include <climits>
+/*============================================================================*/
+namespace Range
 {
-  MIN = LLONG_MIN,
-  MAX = LLONG_MAX
-};
+  enum Range
+  {
+    NEG_INF = INT_MIN,
+    POS_INF = INT_MAX
+  };
+}
 /*============================================================================*/
 struct Interval
 {
-  long long min;
-  long long max;
+  Fraction min;
+  Fraction max;
+
+  friend std::ostream& operator<<(
+    std::ostream& stream,
+    const Interval& interval);
 };
 /*============================================================================*/
 class ParametricMethod
@@ -26,7 +32,9 @@ private:
 public:
   ParametricMethod(
     const SimplexTable& table,
-    const Interval& interval = { MIN, MAX });
+    const Interval& interval = { Range::NEG_INF, Range::POS_INF });
+
+  void Compute();
 };
 /*============================================================================*/
 #endif // PARAMETRIC_METHOD_H
