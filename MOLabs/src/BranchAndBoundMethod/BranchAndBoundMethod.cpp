@@ -2,6 +2,8 @@
 /*============================================================================*/
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
+#include <iostream>
+/*============================================================================*/
 BranchAndBoundMethod::BranchAndBoundMethod(
   const SimplexTable& table):
   _table(table)
@@ -64,8 +66,9 @@ void BranchAndBoundMethod::_addRow(
 SimplexTable BranchAndBoundMethod::_computeBranches(
   const SimplexTable& rootTable)
 {
+  std::cout << "Root table:\n" << rootTable << std::endl;
   SimplexTable res = rootTable;
-  res.Rebuild();
+  res.Rebuild(false);
 
   if (!res.isIntSolution())
   {
@@ -74,13 +77,17 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
     SimplexTable left = rootTable;
     _addRow(left, res, LEFT, index);
     SimplexTable leftRoot = left;
+    std::cout << "Left branch:\n";
+    std::cout << leftRoot << std::endl;
 
     SimplexTable right = rootTable;
     _addRow(right, res, RIGHT, index);
     SimplexTable rightRoot = right;
+    std::cout << "Right branch:\n";
+    std::cout << rightRoot << std::endl;
 
-    left.Rebuild();
-    right.Rebuild();
+    left.Rebuild(false);
+    right.Rebuild(false);
 
     if (left.isExistSolution() && right.isExistSolution())
     {
@@ -111,6 +118,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
     }
     else if (!left.isExistSolution())
     {
+      std::cout << "[Left branch] Not exist solution.\n";
       if (right.isIntSolution())
         res = right;
       else
@@ -118,6 +126,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
     }
     else if (!right.isExistSolution())
     {
+      std::cout << "[Right branch] Not exist solution.\n";
       if (left.isIntSolution())
         res = left;
       else
@@ -131,5 +140,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
 void BranchAndBoundMethod::Compute()
 {
   _table = _computeBranches(_table);
+
+  std::cout << _table << std::endl;
 }
 /*============================================================================*/

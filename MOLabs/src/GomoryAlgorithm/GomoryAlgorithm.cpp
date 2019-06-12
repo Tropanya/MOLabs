@@ -2,10 +2,16 @@
 /*============================================================================*/
 #include <SimplexMethod/Utils.h>
 /*============================================================================*/
+#include <iostream>
+/*============================================================================*/
 GomoryAlgorithm::GomoryAlgorithm(
   const SimplexTable& table):
   _table(table)
-{  }
+{
+  std::cout << _table << std::endl;
+  _table.Rebuild(true);
+  std::cout << _table << std::endl;
+}
 /*============================================================================*/
 GomoryAlgorithm::~GomoryAlgorithm()
 {  }
@@ -49,7 +55,9 @@ void GomoryAlgorithm::Compute()
   while (!_table.isIntSolution())
   {
     _createAdditionalRestriction(_findResolutionIndex());
-    _table.DualSimplexMethod();
+    _table.DualSimplexMethod(true);
   }
+
+  std::cout << _table << std::endl;
 }
 /*============================================================================*/

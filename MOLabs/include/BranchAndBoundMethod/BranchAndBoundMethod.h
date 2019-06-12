@@ -29,8 +29,6 @@ public:
     const SimplexTable& table);
 
   void Compute();
-
-  const SimplexTable& GetTable() const { return _table; }
 };
 /*============================================================================*/
 #endif // BRANCH_AND_BOUND_METHOD_H

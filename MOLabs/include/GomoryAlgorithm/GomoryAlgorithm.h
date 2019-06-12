@@ -20,8 +20,6 @@ public:
   virtual ~GomoryAlgorithm();
 
   void Compute();
-
-  const SimplexTable& GetTable() const { return _table; }
 };
 /*============================================================================*/
 #endif // GOMORY_ALGORITHM_H
