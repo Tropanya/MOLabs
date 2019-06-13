@@ -1,8 +1,16 @@
 #ifndef TARGER_ROW_H
 #define TARGER_ROW_H
 /*============================================================================*/
-#include <SimplexMethod/TargetType.h>
 #include <SimplexMethod/SimplexTableRow.h>
+/*============================================================================*/
+namespace TargetType
+{
+  enum TargetType
+  {
+    MIN = 0,
+    MAX = 1
+  };
+}
 /*============================================================================*/
 class TargetRow:
   public SimplexTableRow
