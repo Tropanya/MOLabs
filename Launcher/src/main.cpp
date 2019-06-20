@@ -41,24 +41,24 @@ int main()
   //  new SimplexTableElement({ Element(4), Element(5), Element(6), Element(0) })
   //};
 
-  std::vector<SimplexTableRow*> data =
-  {
-    new SimplexTableRow({ Element(Fraction(51, 10)), Element(Fraction(76, 10)), Element(Fraction(3876, 100)) }),
-    new SimplexTableRow({ Element(Fraction(-4)), Element(Fraction(121, 10)), Element(Fraction(6171, 100)) }),
-    new SimplexTableRow({ Element(Fraction(91, 10)), Element(Fraction(5)), Element(Fraction(15561, 100)) }),
-    new SimplexTableRow({ Element(Fraction(-7)), Element(Fraction(1)), Element(Fraction(0)) })
-  };
-
-  //std::vector<SimplexTableRow*> data;
-  //std::vector<Point> points =
+  //std::vector<SimplexTableRow*> data =
   //{
-  //  { Element({ 0 }), Element({ 83, 10 }) },
-  //  { Element({ 113, 10 }), Element({ 172, 10 }) },
-  //  { Element({ 83, 10 }), Element({ 0 }) },
-  //  { Element({ 1 }), Element({ 5 }) },
-  //  { Element({ 3 }), Element({ 1 }) }
+  //  new SimplexTableRow({ Element(Fraction(-51, 10)), Element(Fraction(-76, 10)), Element(Fraction(-3876, 100)) }),
+  //  new SimplexTableRow({ Element(Fraction(-4)), Element(Fraction(121, 10)), Element(Fraction(6171, 100)) }),
+  //  new SimplexTableRow({ Element(Fraction(91, 10)), Element(Fraction(5)), Element(Fraction(15561, 100)) }),
+  //  new SimplexTableRow({ Element(Fraction(-7)), Element(Fraction(1)), Element(Fraction(0)) })
   //};
-  //data = CreateSimplexTableDataFromPoints(data, points);
+
+  std::vector<SimplexTableRow*> data;
+  std::vector<Point> points =
+  {
+    { Element({ 0 }), Element({ 83, 10 }) },
+    { Element({ 113, 10 }), Element({ 172, 10 }) },
+    { Element({ 83, 10 }), Element({ 0 }) },
+    { Element({ 1 }), Element({ 5 }) },
+    { Element({ 3 }), Element({ 1 }) }
+  };
+  data = CreateSimplexTableDataFromPoints(data, points);
   SimplexTable table(2, 3, data);
 
   std::cout << "First Gomory:\n";

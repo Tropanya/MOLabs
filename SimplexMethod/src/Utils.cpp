@@ -89,18 +89,14 @@ Fraction GetTotalPart(
 Fraction GetProperFraction(
   const Fraction& impropFraction)
 {
-  Fraction tmpImpropFraction =
-    impropFraction - (impropFraction.get_num() /
-                        impropFraction.get_den());
-
-  if (tmpImpropFraction < Fraction(0))
-  {
-    if (1 == tmpImpropFraction.get_den())
-      return Fraction(0);
-    else
-      return impropFraction - (tmpImpropFraction - Fraction(1));
-  }
+  if (0 == (impropFraction.get_num() % impropFraction.get_den()))
+    return Fraction(0);
   else
-    return tmpImpropFraction;
+  {
+    if (impropFraction < Fraction(0))
+      return impropFraction - (GetTotalPart(impropFraction) - Fraction(1));
+    else
+      return impropFraction - GetTotalPart(impropFraction);
+  }
 }
 /*============================================================================*/
