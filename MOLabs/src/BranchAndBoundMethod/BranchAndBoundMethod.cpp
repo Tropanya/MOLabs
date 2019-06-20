@@ -70,7 +70,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
   SimplexTable res = rootTable;
   res.Rebuild(false);
 
-  if (!res.isIntSolution())
+  if (!res.IsIntSolution())
   {
     unsigned int index = _findResolutionIndex(res);
 
@@ -91,7 +91,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
 
     if (left.isExistSolution() && right.isExistSolution())
     {
-      if (!left.isIntSolution() && !right.isIntSolution())
+      if (!left.IsIntSolution() && !right.IsIntSolution())
       {
         if (left.GetData().back().back() >= right.GetData().back().back())
           res = _computeBranches(leftRoot);
@@ -100,14 +100,14 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
       }
       else
       {
-        if (left.isIntSolution())
+        if (left.IsIntSolution())
         {
           if (left.GetData().back().back() >= right.GetData().back().back())
             res = left;
           else
             res = _computeBranches(rightRoot);
         }
-        else if (right.isIntSolution())
+        else if (right.IsIntSolution())
         {
           if (right.GetData().back().back() >= left.GetData().back().back())
             res = right;
@@ -119,7 +119,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
     else if (!left.isExistSolution())
     {
       std::cout << "[Left branch] Not exist solution.\n";
-      if (right.isIntSolution())
+      if (right.IsIntSolution())
         res = right;
       else
         res = _computeBranches(rightRoot);
@@ -127,7 +127,7 @@ SimplexTable BranchAndBoundMethod::_computeBranches(
     else if (!right.isExistSolution())
     {
       std::cout << "[Right branch] Not exist solution.\n";
-      if (left.isIntSolution())
+      if (left.IsIntSolution())
         res = left;
       else
         res = _computeBranches(leftRoot);

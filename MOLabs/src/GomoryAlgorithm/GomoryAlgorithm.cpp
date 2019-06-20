@@ -48,11 +48,25 @@ unsigned int GomoryAlgorithm::_findResolutionIndex() const
   return resIndex;
 }
 /*============================================================================*/
+bool GomoryAlgorithm::_isIntSolution() const
+{
+  bool res = true;
+
+  for (std::size_t i = 0; i < _intSolutionVars.size(); ++i)
+  {
+    if (0 != GetProperFraction(
+               _table.GetSolutionVars()[_intSolutionVars[i]].GetFree()))
+      res &= false;
+  }
+
+  return res;
+}
+/*============================================================================*/
 void GomoryAlgorithm::Compute()
 {
   _table.InvertRow(_table.GetData().size() - 1);
 
-  while (!_table.isIntSolution())
+  while (!_isIntSolution())
   {
     _createAdditionalRestriction(_findResolutionIndex());
     _table.DualSimplexMethod(true);

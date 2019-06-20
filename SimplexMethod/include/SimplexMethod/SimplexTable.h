@@ -63,7 +63,7 @@ public:
     unsigned int index);
 
   Element ComputeTargetFunc() const;
-  bool isIntSolution() const;
+  bool IsIntSolution() const;
 
   inline unsigned int GetRestrictionCount() const { return _basis.size(); }
   inline const std::vector<Element> GetSolutionVars() const

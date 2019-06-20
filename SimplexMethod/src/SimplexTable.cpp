@@ -345,7 +345,7 @@ Element SimplexTable::ComputeTargetFunc() const
   return res;
 }
 /*============================================================================*/
-bool SimplexTable::isIntSolution() const
+bool SimplexTable::IsIntSolution() const
 {
   bool res = true;
 
