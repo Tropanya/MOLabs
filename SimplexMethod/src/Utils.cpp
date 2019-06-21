@@ -1,8 +1,5 @@
 #include "SimplexMethod/Utils.h"
 /*============================================================================*/
-#include <SimplexMethod/InequalityRow.h>
-#include <SimplexMethod/TargetRow.h>
-/*============================================================================*/
 Element Dot(
   const Point& p1,
   const Point& p2)
@@ -10,15 +7,16 @@ Element Dot(
   return (p1.x * p2.x) + (p1.y * p2.y);
 }
 /*============================================================================*/
-/*bool IsBasis(
-  const Point& point)
+bool IsBasis(
+  std::vector<Element>& data)
 {
-  if ((Dot(point, { Element(1), Element(0) }) == 0) ||
-      (Dot(point, { Element(0), Element(1) }) == 0))
+  if ((data[2] == Element(0)) &&
+      ((Dot({ data[0], data[1] }, { Element(1), Element(0) }) == Element(0)) ||
+       (Dot({ data[0], data[1] }, { Element(0), Element(1) }) == Element(0))))
     return true;
-
-  return false;
-}*/
+  else
+    return false;
+}
 /*============================================================================*/
 std::vector<Element>& CreateElementDataFromPoints(
   std::vector<Element>& data,
@@ -34,49 +32,86 @@ std::vector<Element>& CreateElementDataFromPoints(
 /*============================================================================*/
 SimplexTableRow* CreateInequalityElement(
   const Point& p1,
-  const Point& p2)
+  const Point& p2,
+  const Point& pointInSOFS)
 {
   std::vector<Element> data;
   data = CreateElementDataFromPoints(data, p1, p2);
 
-  return new InequalityRow(data, InequalitySignType::LE);
+  InequalitySignType::InequalitySignType sign = InequalitySignType::LE;
 
-  //if (!IsBasis({ data[0], data[1] }))
-  //  return new InequalityRow(data, InequalitySignType::LE);
-  //else
-  //  return nullptr;
+  if ((data[0] * pointInSOFS.x + data[1] * pointInSOFS.y - data[2]) > Element(0))
+    sign = InequalitySignType::GE;
+
+  if (!IsBasis(data))
+    return new InequalityRow(data, sign);
+  else
+    return nullptr;
 }
 /*============================================================================*/
 SimplexTableRow* CreateObjectiveElement(
   const Point& p1,
-  const Point& p2)
+  const Point& p2,
+  TargetType::TargetType type)
 {
   std::vector<Element> data;
   data = CreateElementDataFromPoints(data, p1, p2);
 
-  return new TargetRow(data, TargetType::MAX);
+  return new TargetRow(data, type);
 }
 /*============================================================================*/
 std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
-  std::vector<SimplexTableRow*>& data,
-  const std::vector<Point>& points)
+  std::vector<SimplexTableRow*>& result,
+  const std::vector<Point>& restrPoints,
+  const Point& pointInSOFS)
 {
-  SimplexTableRow* result;
+  SimplexTableRow* tmpRes;
 
-  for (std::size_t i = 1; i < points.size(); ++i)
+  std::size_t pointsSize = restrPoints.size();
+  for (std::size_t i = 1; i <= pointsSize; ++i)
   {
-    if (points.size() - 2 == i)
-      result = CreateInequalityElement(points[i - 1], points[0]);
-    else if (i > points.size() - 2)
-      result = CreateObjectiveElement(points[i - 1], points[i]);
+    if (i == pointsSize)
+      tmpRes = CreateInequalityElement(restrPoints[pointsSize - 1],
+        restrPoints[0], pointInSOFS);
     else
-      result = CreateInequalityElement(points[i - 1], points[i]);
+      tmpRes = CreateInequalityElement(restrPoints[i - 1],
+        restrPoints[i], pointInSOFS);
 
-    if (result)
-      data.emplace_back(result);
+    if (tmpRes)
+      result.emplace_back(tmpRes);
   }
 
-  return data;
+  return result;
+}
+/*============================================================================*/
+std::vector<SimplexTableRow*>&CreateSimplexTableDataFromPoints(
+  std::vector<SimplexTableRow*>& result,
+  const std::vector<Point>& restrPoints,
+  const Point& pointInSOFS,
+  const Point& F1,
+  const Point& F2,
+  TargetType::TargetType type)
+{
+  SimplexTableRow* tmpRes;
+
+  std::size_t pointsSize = restrPoints.size();
+  for (std::size_t i = 1; i <= pointsSize; ++i)
+  {
+    if(i == pointsSize)
+      tmpRes = CreateInequalityElement(restrPoints[pointsSize - 1],
+                                       restrPoints[0], pointInSOFS);
+    else
+      tmpRes = CreateInequalityElement(restrPoints[i - 1],
+                                       restrPoints[i], pointInSOFS);
+
+    if (tmpRes)
+      result.emplace_back(tmpRes);
+  }
+
+  tmpRes = CreateObjectiveElement(F1, F2, type);
+  result.emplace_back(tmpRes);
+
+  return result;
 }
 /*============================================================================*/
 Fraction GetTotalPart(

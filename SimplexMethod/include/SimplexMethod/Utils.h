@@ -1,7 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 /*============================================================================*/
-#include <SimplexMethod/SimplexTableRow.h>
+#include <SimplexMethod/InequalityRow.h>
+#include <SimplexMethod/TargetRow.h>
 /*============================================================================*/
 struct Point
 {
@@ -11,8 +12,8 @@ struct Point
 Element Dot(
   const Point& p1,
   const Point& p2);
-/*bool IsBasis(
-  const Point& point);*/
+bool IsBasis(
+  std::vector<Element>& data);
 /*============================================================================*/
 std::vector<Element>& CreateElementDataFromPoints(
   std::vector<Element>& data,
@@ -20,13 +21,23 @@ std::vector<Element>& CreateElementDataFromPoints(
   const Point& p2);
 SimplexTableRow* CreateInequalityElement(
   const Point& p1,
-  const Point& p2);
+  const Point& p2,
+  const Point& pointInSOFS);
 SimplexTableRow* CreateObjectiveElement(
   const Point& p1,
-  const Point& p2);
+  const Point& p2,
+  TargetType::TargetType type);
 std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
-  std::vector<SimplexTableRow*>& data,
-  const std::vector<Point>& points);
+  std::vector<SimplexTableRow*>& result,
+  const std::vector<Point>& restrPoints,
+  const Point& pointInSOFS);
+std::vector<SimplexTableRow*>& CreateSimplexTableDataFromPoints(
+  std::vector<SimplexTableRow*>& result,
+  const std::vector<Point>& restrPoints,
+  const Point& pointInSOFS,
+  const Point& F1,
+  const Point& F2,
+  TargetType::TargetType type);
 /*============================================================================*/
 Fraction GetTotalPart(
   const Fraction& impropFraction);
