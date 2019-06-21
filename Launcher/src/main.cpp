@@ -59,11 +59,11 @@ int main()
   };
 
   data2 = CreateSimplexTableDataFromPoints(data2, points2, { Element({ 8 }), Element({ 1 }) });
-  data2.emplace_back(new SimplexTableRow({ Element({ 2 }),  Element({ 2 },{ -1 }),  Element({ 0 }) }));
+  data2.emplace_back(new SimplexTableRow({ Element({ 4 }),  Element({ 2 },{ -1 }),  Element({ 0 }) }));
 
   std::cout << "Parametric method:\n";
   SimplexTable table2(2, data2.size() - 1, data2);
-  ParametricMethod parametricMethod(table2, { Range::NEG_INF, Range::POS_INF });
+  ParametricMethod parametricMethod(table2, { 2, 10 });
   parametricMethod.Compute();
   std::cout << "\n";
 

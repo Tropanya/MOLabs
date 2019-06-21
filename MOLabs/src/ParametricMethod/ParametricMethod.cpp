@@ -89,15 +89,15 @@ void ParametricMethod::Compute()
     }
 
     if (onlyNegative)
-      subInterval.min = Range::NEG_INF;
+      subInterval.min = _interval.min;
 
     if (onlyPositive)
-      subInterval.max = Range::POS_INF;
+      subInterval.max = _interval.max;
 
     std::cout << subInterval << std::endl;
     std::cout << _table << std::endl;
 
-    if (Range::POS_INF == subInterval.max)
+    if (_interval.max == subInterval.max)
       break;
     else
       leftBound = subInterval.max + Fraction(1, 1000);
